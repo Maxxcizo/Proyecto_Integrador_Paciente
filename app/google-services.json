@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "365601287410",
-    "project_id": "medsync-97631",
-    "storage_bucket": "medsync-97631.appspot.com"
+    "project_number": "1082772487694",
+    "project_id": "pids-9bf85",
+    "storage_bucket": "pids-9bf85.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:365601287410:android:608da7d67828d50f1e346b",
+        "mobilesdk_app_id": "1:1082772487694:android:bf3c41f749e0d043ad465f",
         "android_client_info": {
           "package_name": "com.example.medsyncpaciente"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyB5ri57IGwKnSMcIzbinEwmNMIpHQso_cM"
+          "current_key": "AIzaSyBO6BJ0DL10iY0pdtORgMRX0s0rN4JRRJY"
         }
       ],
       "services": {

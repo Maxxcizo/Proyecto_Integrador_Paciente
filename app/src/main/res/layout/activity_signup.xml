@@ -13,7 +13,7 @@
         android:layout_height="20dp" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/back_btn"
         android:layout_width="70dp"
         android:layout_height="40dp"
         android:paddingLeft="10dp"
@@ -24,7 +24,7 @@
         android:layout_height="20dp" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/tittle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="28dp"
@@ -54,10 +54,11 @@
         android:layout_width="350dp"
         android:layout_height="40dp"
         android:ems="10"
+        android:paddingStart="10dp"
         android:inputType="text"
         android:layout_gravity="center"
         android:background="@drawable/campos_de_texto_redondeados"
-        android:hint="  Ingresa tu nombre(s)"
+        android:hint="Ingresa tu nombre(s)"
 
         />
 
@@ -82,10 +83,11 @@
         android:layout_width="350dp"
         android:layout_height="40dp"
         android:ems="10"
+        android:paddingStart="10dp"
         android:inputType="text"
         android:layout_gravity="center"
         android:background="@drawable/campos_de_texto_redondeados"
-        android:hint="  Ingresa tu Apellido Paterno"
+        android:hint="Ingresa tu Apellido Paterno"
 
         />
 
@@ -110,10 +112,11 @@
         android:layout_width="350dp"
         android:layout_height="40dp"
         android:ems="10"
+        android:paddingStart="10dp"
         android:inputType="text"
         android:layout_gravity="center"
         android:background="@drawable/campos_de_texto_redondeados"
-        android:hint="  Ingresa tu Apellido Materno"
+        android:hint="Ingresa tu Apellido Materno"
 
         />
 
@@ -138,10 +141,11 @@
         android:layout_width="350dp"
         android:layout_height="40dp"
         android:ems="10"
+        android:paddingStart="10dp"
         android:inputType="text"
         android:layout_gravity="center"
         android:background="@drawable/campos_de_texto_redondeados"
-        android:hint="  Ingresa tu Correo Electrónico"
+        android:hint="Ingresa tu Correo Electrónico"
 
         />
 
@@ -162,14 +166,15 @@
         android:layout_height="10dp" />
 
     <EditText
-        android:id="@+id/editTextTextEmailAddress"
+        android:id="@+id/et_telefono"
         android:layout_width="350dp"
         android:layout_height="40dp"
         android:ems="10"
+        android:paddingStart="10dp"
         android:inputType="phone"
         android:layout_gravity="center"
         android:background="@drawable/campos_de_texto_redondeados"
-        android:hint="  Ingresa tu número de teléfono"
+        android:hint="Ingresa tu número de teléfono"
 
         />
 
@@ -178,7 +183,7 @@
         android:layout_height="30dp" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/continuar_btn"
         android:layout_width="280dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
@@ -190,9 +195,9 @@
         android:layout_height="30dp" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/login_tv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:text="¿Ya tienes cuenta? Inicia Sesión"
         android:gravity="center"
         android:textStyle="bold"

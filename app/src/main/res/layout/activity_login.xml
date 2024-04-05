@@ -9,7 +9,7 @@
     tools:context=".LogIn">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/loginImage"
             android:layout_width="wrap_content"
             android:layout_height="290dp"
             app:srcCompat="@drawable/loginimage" />
@@ -19,7 +19,7 @@
             android:layout_height="20dp" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/loginTittle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="28dp"
@@ -33,7 +33,7 @@
             android:layout_height="20dp" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/email_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="30dp"
@@ -45,14 +45,15 @@
             android:layout_height="10dp" />
 
         <EditText
-            android:id="@+id/editTextTextEmailAddress"
+            android:id="@+id/email_et"
             android:layout_width="350dp"
             android:layout_height="50dp"
             android:ems="10"
+            android:paddingStart="10dp"
             android:inputType="textEmailAddress"
             android:layout_gravity="center"
             android:background="@drawable/campos_de_texto_redondeados"
-            android:hint="  Ingresa tu correo electrónico"
+            android:hint="Ingresa tu correo electrónico"
 
             />
 
@@ -61,7 +62,7 @@
             android:layout_height="20dp" />
 
         <TextView
-            android:id="@+id/tv_Password"
+            android:id="@+id/password_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="24dp"
@@ -73,12 +74,13 @@
             android:layout_height="10dp" />
 
         <EditText
-            android:id="@+id/et_Password"
+            android:id="@+id/password_et"
             android:layout_width="350dp"
             android:layout_height="50dp"
             android:ems="10"
+            android:paddingStart="10dp"
             android:layout_gravity="center"
-            android:hint="  Ingresa tu contraseña"
+            android:hint="Ingresa tu contraseña"
             android:background="@drawable/campos_de_texto_redondeados"
             android:inputType="textPassword" />
 
@@ -87,7 +89,7 @@
             android:layout_height="30dp" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/login_btn"
             android:layout_width="280dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
@@ -100,9 +102,9 @@
             android:layout_height="30dp" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/signUp_tv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:text="¿No tienes cuenta? Registrate"
             android:textStyle="bold"
             android:gravity="center"

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_today"
+        android:icon="@drawable/ic_checklist"
+        android:title="Today" />
+
+    <item
+        android:id="@+id/menu_progress"
+        android:icon="@drawable/ic_showchart"
+        android:title="Progress" />
+
+    <item
+        android:id="@+id/menu_measurements"
+        android:icon="@drawable/ic_measurement"
+        android:title="Measures" />
+
+    <item
+        android:id="@+id/menu_treatment"
+        android:icon="@drawable/ic_treatment"
+        android:title="Treatment" />
+
+</menu>
