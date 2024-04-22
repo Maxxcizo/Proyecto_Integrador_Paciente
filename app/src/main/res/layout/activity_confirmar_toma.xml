@@ -10,7 +10,7 @@
     <include
         android:id="@+id/toolbar_confirmartoma"
         layout="@layout/toolbarsecundario"
-        app:layout_constraintTop_toTopOf="parent" />
+         />
 
     <!-- CardView para cambiar contraseña -->
     <androidx.cardview.widget.CardView

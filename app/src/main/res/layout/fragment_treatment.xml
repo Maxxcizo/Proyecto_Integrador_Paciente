@@ -5,16 +5,12 @@
     android:layout_height="match_parent"
     tools:context=".fragments.TreatmentFragment">
 
-    <RelativeLayout
+    <!-- RecyclerView para los tratamientos -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView_Treatment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Treatment"
-            android:layout_centerInParent="true"
-            />
-    </RelativeLayout>
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp" />
 
 </FrameLayout>

@@ -1,15 +1,18 @@
 package com.example.medsyncpaciente
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,17 +36,17 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
-        toolbar = findViewById<Toolbar>(R.id.toolbar_settings)
-        toolbarTitle = findViewById<TextView>(R.id.toolbarsecundario_title)
+        toolbar = findViewById(R.id.toolbar_settings)
+        toolbarTitle = findViewById(R.id.toolbarsecundario_title)
         backIcon = findViewById(R.id.back_btn)
         logoutButton = findViewById(R.id.logout_btn)
 
         // Configuracion del Recycler View y su adaptador
-        recyclerView = findViewById<RecyclerView>(R.id.recyclerView_Settings)
+        recyclerView = findViewById(R.id.recyclerView_Settings)
         val adapter = AdaptadorSettings(this)
 
         val dividerItemDecoration = DividerItemDecoration(recyclerView.context, DividerItemDecoration.VERTICAL)
-        recyclerView.addItemDecoration(dividerItemDecoration )
+        recyclerView.addItemDecoration(dividerItemDecoration)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
@@ -60,10 +63,30 @@ class SettingsActivity : AppCompatActivity() {
             onBackPressed()
         }
 
-
         logoutButton.setOnClickListener{
-            // Proceso de cerrar Sesion
+            val dialogo1 = AlertDialog.Builder(this)
+            dialogo1.setTitle("Aviso")
+            dialogo1.setMessage("¿Quieres cerrar sesión?")
+            dialogo1.setCancelable(false)
+            dialogo1.setPositiveButton("Confirmar") { dialog, _ ->
+                aceptar()
+                dialog.dismiss()
+            }
+            dialogo1.setNegativeButton("Cancelar") { dialog, _ ->
+                cancelar()
+                dialog.dismiss()
+            }
+            dialogo1.show()
         }
+    }
 
+    private fun aceptar() {
+        val t = Toast.makeText(this, "Aceptaste.", Toast.LENGTH_SHORT)
+        t.show()
+    }
+
+    private fun cancelar() {
+        val t = Toast.makeText(this, "Rechazaste.", Toast.LENGTH_SHORT)
+        t.show()
     }
 }

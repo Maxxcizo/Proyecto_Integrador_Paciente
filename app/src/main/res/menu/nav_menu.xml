@@ -21,4 +21,9 @@
         android:icon="@drawable/ic_treatment"
         android:title="Treatment" />
 
+    <item
+        android:id="@+id/menu_medicamentos"
+        android:icon="@drawable/ic_treatment"
+        android:title="Medicamentos" />
+
 </menu>

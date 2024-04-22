@@ -9,34 +9,28 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintSet.Layout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.medsyncpaciente.ConfirmarTomaActivity
 import com.example.medsyncpaciente.R
 
-class AdaptadorMedicina(private val context: Context) : RecyclerView.Adapter<AdaptadorMedicina.ViewHolder>() {
+class AdaptadorMedicamentos(private val context: Context) : RecyclerView.Adapter<AdaptadorMedicamentos.ViewHolder>() {
 
     // hora,medicina,dosis
 
-    private val hora = arrayOf("8:00 a.m.", "9:00 a.m.", "10:00 a.m.")
-    private val medicamento = arrayOf("Paracetamol", "Ibuprofeno", "PeptoBismol")
-    private val dosis = arrayOf("un par", "varios", "moderado")
-
+        private val medicamento = arrayOf("Paracetamol", "Ibuprofeno", "PeptoBismol")
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.rv_medicine, parent, false)
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.rv_medicamentos, parent, false)
         return ViewHolder(v)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val hour = hora[position]
         val medicine = medicamento[position]
-        val dosis = dosis[position]
 
-        holder.horatext.text = hour
         holder.medicamentotext.text = medicine
-        holder.dosistext.text = dosis
-        holder.CampoRecycler.setOnClickListener{
+        holder.card.setOnClickListener{
             // Acción a realizar cuando se haga clic en el botón "go"
             // Por ejemplo, puedes abrir una nueva actividad
             val intent = Intent(context, ConfirmarTomaActivity::class.java)
@@ -45,14 +39,12 @@ class AdaptadorMedicina(private val context: Context) : RecyclerView.Adapter<Ada
     }
 
     override fun getItemCount(): Int {
-        return hora.size
+        return medicamento.size
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var horatext: TextView = itemView.findViewById(R.id.hour_tv)
         var medicamentotext: TextView = itemView.findViewById(R.id.medicamento_tv)
-        var dosistext: TextView = itemView.findViewById(R.id.dosis_tv)
-        var CampoRecycler: LinearLayout = itemView.findViewById(R.id.campoRecycler)
+        var card: CardView = itemView.findViewById(R.id.medicamentos_cardview)
     }
 
 }

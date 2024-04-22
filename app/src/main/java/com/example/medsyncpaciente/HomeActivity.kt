@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.example.medsyncpaciente.fragments.MeasurementFragment
+import com.example.medsyncpaciente.fragments.MedicamentosFragment
 import com.example.medsyncpaciente.fragments.ProgressFragment
 import com.example.medsyncpaciente.fragments.TodayFragment
 import com.example.medsyncpaciente.fragments.TreatmentFragment
@@ -24,6 +25,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var progressFragment: ProgressFragment
     private lateinit var treatmentFragment: TreatmentFragment
     private lateinit var measurementsFragment: MeasurementFragment
+    private lateinit var medicamentosFragment: MedicamentosFragment
     private lateinit var bottomNavigation: BottomNavigationView
     private lateinit var toolbarTitle: TextView
     private lateinit var toolbar: Toolbar
@@ -43,6 +45,7 @@ class HomeActivity : AppCompatActivity() {
         progressFragment = ProgressFragment()
         treatmentFragment = TreatmentFragment()
         measurementsFragment = MeasurementFragment()
+        medicamentosFragment = MedicamentosFragment()
         bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         toolbarTitle = findViewById<TextView>(R.id.toolbar_title)
         toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -82,6 +85,13 @@ class HomeActivity : AppCompatActivity() {
                         Log.d("BottomNavigation", "Measure Fragment Selected")
                     }
                 }
+                R.id.menu_medicamentos -> {
+                    if (getCurrentFragment() !is MedicamentosFragment) {
+                        makeCurrentFragment(medicamentosFragment)
+                        toolbarTitle.text = "Medicamentos"
+                        Log.d("BottomNavigation", "Medicamentos Fragment Selected")
+                    }
+                }
             }
             true
         }
@@ -104,7 +114,7 @@ class HomeActivity : AppCompatActivity() {
                 toolbar.menu.findItem(R.id.menu_export)?.isVisible = true
                 toolbar.menu.findItem(R.id.menu_account)?.isVisible = false
             }
-            is TreatmentFragment, is MeasurementFragment -> {
+            is TreatmentFragment, is MeasurementFragment, is MedicamentosFragment -> {
                 toolbar.menu.findItem(R.id.menu_notification)?.isVisible = false
                 toolbar.menu.findItem(R.id.menu_export)?.isVisible = false
                 toolbar.menu.findItem(R.id.menu_account)?.isVisible = true

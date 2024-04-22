@@ -5,6 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.medsyncpaciente.Adapters.AdaptadorMedicina
+import com.example.medsyncpaciente.Adapters.AdaptadorTratamientos
 import com.example.medsyncpaciente.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -21,6 +25,7 @@ class TreatmentFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +40,12 @@ class TreatmentFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_treatment, container, false)
+        val view = inflater.inflate(R.layout.fragment_treatment, container, false)
+        recyclerView = view.findViewById(R.id.recyclerView_Treatment)
+        val adapter = AdaptadorTratamientos(requireActivity()) // Usar requireActivity() para obtener el contexto de la actividad
+        recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.adapter = adapter
+        return view
     }
 
     companion object {
