@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet.Layout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.medsyncpaciente.ConfirmarTomaActivity
+import com.example.medsyncpaciente.DetallesCitaActivity
 import com.example.medsyncpaciente.R
 
 class AdaptadorCitas(private val context: Context) : RecyclerView.Adapter<AdaptadorCitas.ViewHolder>() {
@@ -38,13 +39,13 @@ class AdaptadorCitas(private val context: Context) : RecyclerView.Adapter<Adapta
         holder.CampoRecycler.setOnClickListener{
             // Acción a realizar cuando se haga clic en el botón "go"
             // Por ejemplo, puedes abrir una nueva actividad
-            val intent = Intent(context, ConfirmarTomaActivity::class.java)
+            val intent = Intent(context, DetallesCitaActivity::class.java)
             context.startActivity(intent)
         }
     }
 
     override fun getItemCount(): Int {
-        return hora.size
+        return medico.size
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

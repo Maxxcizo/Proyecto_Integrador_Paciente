@@ -1,28 +1,367 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".AddAppointmentActivity">
-
+    android:layout_height="match_parent">
 
     <include
-        android:id="@+id/toolbar_agregarCita"
-        layout="@layout/toolbarsecundario" />
-
-
-    <RelativeLayout
+        android:id="@+id/toolbar_agendarCitas"
+        layout="@layout/toolbarsecundario"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_agendarCitas"
+        app:layout_constraintBottom_toTopOf="@id/button_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/title"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Agendar Cita"
-            android:layout_centerInParent="true"
-            />
-    </RelativeLayout>
+            android:text="Programación Automática"
+            android:textColor="@color/black"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:layout_margin="10dp"/>
+
+            <!-- CardView para cambiar contraseña -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cita_cardview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                app:cardCornerRadius="20dp">
+
+                <LinearLayout
+                    android:id="@+id/campoRecycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="5dp" />
+
+                    <TextView
+                        android:id="@+id/hour_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:textStyle="bold"
+                        android:textSize="22dp"
+                        android:textColor="@color/black"
+                        android:text="Preferencias" />
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="10dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/dia"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_marginLeft="15dp"
+                                    android:gravity="left"
+                                    android:text="Día:"
+                                    android:textColor="@color/black"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <Spinner
+                                    android:id="@+id/dia_spinner"
+                                    android:layout_width="wrap_content"
+                                    android:layout_marginRight="15dp"
+                                    android:layout_gravity="right"
+                                    android:gravity="right"
+                                    android:layout_height="wrap_content" />
+
+                            </LinearLayout>
+
+
+
+                            <Space
+                                android:layout_width="match_parent"
+                                android:layout_height="10dp" />
+
+                            <com.google.android.material.divider.MaterialDivider
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginRight="15dp"
+                                app:dividerColor="@color/black"
+                                />
+
+                            <Space
+                                android:layout_width="match_parent"
+                                android:layout_height="10dp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/hora"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_marginLeft="15dp"
+                                    android:gravity="left"
+                                    android:text="Hora:"
+                                    android:textColor="@color/black"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <Spinner
+                                    android:id="@+id/hora_spinner"
+                                    android:layout_width="wrap_content"
+                                    android:layout_marginRight="15dp"
+                                    android:layout_gravity="right"
+                                    android:gravity="right"
+                                    android:layout_height="wrap_content" />
+
+                            </LinearLayout>
+
+                            <Space
+                                android:layout_width="match_parent"
+                                android:layout_height="10dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+
+        <!-- CardView para cambiar contraseña -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            app:cardCornerRadius="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp" />
+
+                <TextView
+                    android:id="@+id/title3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:textStyle="bold"
+                    android:textSize="22dp"
+                    android:textColor="@color/black"
+                    android:text="Próxima Cita Disponible" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+
+                <TextView
+                    android:id="@+id/fecha_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:textStyle="bold"
+                    android:textSize="16dp"
+                    android:textColor="@color/black"
+                    android:text="18/03/2024" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/dia2"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="15dp"
+                                android:gravity="left"
+                                android:text="Día:"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/dia_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_marginRight="20dp"
+                                android:layout_gravity="right"
+                                android:gravity="right"
+                                android:layout_height="wrap_content"
+                                android:text="Lunes"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+
+
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="10dp" />
+
+                        <com.google.android.material.divider.MaterialDivider
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginRight="15dp"
+                            app:dividerColor="@color/black"
+                            />
+
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="10dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/hora2"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="15dp"
+                                android:gravity="left"
+                                android:text="Hora:"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/hora_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_marginRight="20dp"
+                                android:layout_gravity="right"
+                                android:gravity="right"
+                                android:layout_height="wrap_content"
+                                android:text="8:00 a.m."
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="10dp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/programacionManual_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_gravity="left"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/boton_redondo"
+            android:text="Manual"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/confirmar_btn"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:layout_margin="15dp"
+            android:background="@drawable/boton_redondo"
+            android:text="Buscar siguiente"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/posponer_btn"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:layout_margin="15dp"
+            android:background="@drawable/boton_redondo"
+            android:text="@string/confirm_button_text"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

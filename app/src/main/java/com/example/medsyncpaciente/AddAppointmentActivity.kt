@@ -24,7 +24,7 @@ class AddAppointmentActivity : AppCompatActivity() {
             insets
         }
 
-        toolbar = findViewById<Toolbar>(R.id.toolbar_agregarCita)
+        toolbar = findViewById<Toolbar>(R.id.toolbar_agendarCitas)
         toolbarTitle = findViewById<TextView>(R.id.toolbarsecundario_title)
         backIcon = findViewById(R.id.back_btn)
 

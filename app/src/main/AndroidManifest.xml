@@ -13,6 +13,9 @@
         android:theme="@style/Theme.MedSyncPaciente"
         tools:targetApi="31">
         <activity
+            android:name=".DetallesCitaActivity"
+            android:exported="false" />
+        <activity
             android:name=".AddAppointmentActivity"
             android:exported="false" />
         <activity
