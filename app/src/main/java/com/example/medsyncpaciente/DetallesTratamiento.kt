@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.medsyncpaciente.Adapters.AdaptadorCumplimientoFecha
 import com.example.medsyncpaciente.Adapters.AdaptadorMedicamentos
+import com.example.medsyncpaciente.Adapters.AdaptadorMedicamentosLista
 import com.example.medsyncpaciente.Adapters.AdaptadorMediciones
 import com.example.medsyncpaciente.Adapters.AdaptadorSintomas
 
@@ -58,7 +59,7 @@ class DetallesTratamiento : AppCompatActivity() {
 
         // Configuracion del Recycler View de medicamentos y su adaptador
         recyclerMedicamentos = findViewById<RecyclerView>(R.id.recycler_Medicamentos)
-        val adapterMedicamentos = AdaptadorMedicamentos(this)
+        val adapterMedicamentos = AdaptadorMedicamentosLista(this)
 
         val dividerItemDecorationMedicamentos = DividerItemDecoration(recyclerMedicamentos.context, DividerItemDecoration.VERTICAL)
         recyclerMedicamentos.addItemDecoration(dividerItemDecorationMedicamentos )

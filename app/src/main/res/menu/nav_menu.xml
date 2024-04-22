@@ -18,7 +18,7 @@
 
     <item
         android:id="@+id/menu_treatment"
-        android:icon="@drawable/ic_treatment"
+        android:icon="@drawable/treatment_icon"
         android:title="Treatment" />
 
     <item

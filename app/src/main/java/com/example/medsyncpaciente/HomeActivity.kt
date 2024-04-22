@@ -108,16 +108,19 @@ class HomeActivity : AppCompatActivity() {
                 toolbar.menu.findItem(R.id.menu_notification)?.isVisible = true
                 toolbar.menu.findItem(R.id.menu_export)?.isVisible = false
                 toolbar.menu.findItem(R.id.menu_account)?.isVisible = false
+                toolbar.menu.findItem(R.id.menu_citas)?.isVisible = true
             }
             is ProgressFragment -> {
                 toolbar.menu.findItem(R.id.menu_notification)?.isVisible = false
                 toolbar.menu.findItem(R.id.menu_export)?.isVisible = true
                 toolbar.menu.findItem(R.id.menu_account)?.isVisible = false
+                toolbar.menu.findItem(R.id.menu_citas)?.isVisible = true
             }
             is TreatmentFragment, is MeasurementFragment, is MedicamentosFragment -> {
                 toolbar.menu.findItem(R.id.menu_notification)?.isVisible = false
                 toolbar.menu.findItem(R.id.menu_export)?.isVisible = false
                 toolbar.menu.findItem(R.id.menu_account)?.isVisible = true
+                toolbar.menu.findItem(R.id.menu_citas)?.isVisible = true
             }
         }
     }
@@ -127,6 +130,7 @@ class HomeActivity : AppCompatActivity() {
         toolbar.menu.findItem(R.id.menu_notification)?.isVisible = true
         toolbar.menu.findItem(R.id.menu_export)?.isVisible = false
         toolbar.menu.findItem(R.id.menu_account)?.isVisible = false
+        toolbar.menu.findItem(R.id.menu_citas)?.isVisible = true
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -149,6 +153,11 @@ class HomeActivity : AppCompatActivity() {
             R.id.menu_notification -> {
                 startActivity(Intent(this, NotificationsActivity::class.java))
                 Toast.makeText(this, "Notifications", Toast.LENGTH_SHORT).show()
+                return true
+            }
+            R.id.menu_citas -> {
+                startActivity(Intent(this, CitasActivity::class.java))
+                Toast.makeText(this, "Citas", Toast.LENGTH_SHORT).show()
                 return true
             }
         }

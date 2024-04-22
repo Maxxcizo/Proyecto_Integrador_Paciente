@@ -22,6 +22,12 @@
         android:icon="@drawable/ic_accountcircle"
         app:showAsAction="always"/>
 
+    <item
+        android:id="@+id/menu_citas"
+        android:title="Account"
+        android:icon="@drawable/date_icon"
+        app:showAsAction="always"/>
+
 
 
 </menu>
