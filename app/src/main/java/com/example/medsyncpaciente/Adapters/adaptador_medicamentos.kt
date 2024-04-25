@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintSet.Layout
 import androidx.recyclerview.widget.RecyclerView
+import com.example.medsyncpaciente.AgregarMedicamentoActivity
 import com.example.medsyncpaciente.ConfirmarTomaActivity
 import com.example.medsyncpaciente.R
 
@@ -33,7 +34,7 @@ class AdaptadorMedicamentos(private val context: Context) : RecyclerView.Adapter
         holder.card.setOnClickListener{
             // Acción a realizar cuando se haga clic en el botón "go"
             // Por ejemplo, puedes abrir una nueva actividad
-            val intent = Intent(context, ConfirmarTomaActivity::class.java)
+            val intent = Intent(context, AgregarMedicamentoActivity::class.java)
             context.startActivity(intent)
         }
     }

@@ -9,7 +9,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
-class NotificationsActivity : AppCompatActivity() {
+class GraficasMedicionesActivity : AppCompatActivity() {
 
     private lateinit var toolbar: Toolbar
     private lateinit var toolbarTitle: TextView
@@ -17,18 +17,19 @@ class NotificationsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_notifications)
+        setContentView(R.layout.activity_graficas_mediciones)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        toolbar = findViewById<Toolbar>(R.id.toolbar_notifications)
+
+        toolbar = findViewById<Toolbar>(R.id.toolbar_graficasMediciones)
         toolbarTitle = findViewById<TextView>(R.id.toolbarsecundario_title)
         backIcon = findViewById(R.id.back_btn)
 
         toolbar.title = ""
-        toolbarTitle.text = "Notifications"
+        toolbarTitle.text = "Graficas Mediciones"
         setSupportActionBar(toolbar)
 
         setup()
@@ -39,6 +40,4 @@ class NotificationsActivity : AppCompatActivity() {
             onBackPressed()
         }
     }
-
-
 }

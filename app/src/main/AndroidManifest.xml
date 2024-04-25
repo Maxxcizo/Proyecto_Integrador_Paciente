@@ -13,6 +13,21 @@
         android:theme="@style/Theme.MedSyncPaciente"
         tools:targetApi="31">
         <activity
+            android:name=".AgregarMedicamentoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RegistroSintomasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RegistroMedicionesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GraficasMedicionesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ReprogramacionCitaActivity"
+            android:exported="false" />
+        <activity
             android:name=".DetallesCitaActivity"
             android:exported="false" />
         <activity

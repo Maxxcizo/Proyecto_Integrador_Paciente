@@ -15,6 +15,7 @@ import com.example.medsyncpaciente.Adapters.AdaptadorCumplimientoFecha
 import com.example.medsyncpaciente.Adapters.AdaptadorMedicamentos
 import com.example.medsyncpaciente.Adapters.AdaptadorMedicamentosLista
 import com.example.medsyncpaciente.Adapters.AdaptadorMediciones
+import com.example.medsyncpaciente.Adapters.AdaptadorMedicionesLista
 import com.example.medsyncpaciente.Adapters.AdaptadorSintomas
 
 class DetallesTratamiento : AppCompatActivity() {
@@ -47,7 +48,7 @@ class DetallesTratamiento : AppCompatActivity() {
 
         // Configuracion del Recycler View de mediciones y su adaptador
         recyclerMediciones = findViewById<RecyclerView>(R.id.recycler_Mediciones)
-        val adapterMediciones = AdaptadorMediciones(this)
+        val adapterMediciones = AdaptadorMedicionesLista(this)
 
         val dividerItemDecorationMediciones = DividerItemDecoration(recyclerMediciones.context, DividerItemDecoration.VERTICAL)
         recyclerMediciones.addItemDecoration(dividerItemDecorationMediciones )

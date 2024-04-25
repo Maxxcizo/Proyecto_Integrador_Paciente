@@ -1,36 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <!-- CardView para cambiar contraseña -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/mediciones_cardview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        app:cardCornerRadius="20dp">
 
-        <TextView
-            android:id="@+id/medicion_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="left"
-            android:text="Frecuencia Cardiaca"
-            android:textSize="18sp"
-            />
+        <LinearLayout
+            android:id="@+id/campoRecycler1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/valor_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:text="120lpm"
-            android:textSize="18sp"
-            android:textStyle="normal" />
+            <LinearLayout
+                android:id="@+id/campoRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-    </LinearLayout>
+                <ImageView
+                    android:id="@+id/icon"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="10dp"
+                    android:layout_gravity="center_vertical"
+                    app:srcCompat="@android:drawable/ic_dialog_info"
+                    app:tint="@color/lightblue" />
+
+                <TextView
+                    android:id="@+id/medicion_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingLeft="30dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="28sp"
+                    android:text="Presión arterial" />
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
+
+            <TextView
+                android:id="@+id/frecuencia_tv"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:text="2 veces al dia-8:00 a.m. y 8:00 p.m." />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp" />
 
 
-</LinearLayout>
+            <ImageView
+                android:id="@+id/notification_icon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="10dp"
+                android:layout_gravity="right"
+                app:srcCompat="@android:drawable/ic_dialog_info"
+                app:tint="@color/lightblue" />
 
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>
