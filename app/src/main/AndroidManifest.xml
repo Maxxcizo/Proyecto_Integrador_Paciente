@@ -52,10 +52,10 @@
             android:name=".ReportActivity"
             android:exported="false" />
         <activity
-            android:name=".ChangePasswordActivity"
+            android:name=".CambiarPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".ProfileActivity"
+            android:name=".PerfilActivity"
             android:exported="false" />
         <activity
             android:name=".MenuActivity"
@@ -79,7 +79,7 @@
             android:name=".Signup"
             android:exported="false" />
         <activity
-            android:name=".LogIn"
+            android:name=".InicioDeSesion"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

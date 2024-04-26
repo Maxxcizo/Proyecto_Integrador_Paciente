@@ -8,10 +8,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.firestore.FirebaseFirestore
 
 class Signup : AppCompatActivity() {
 
@@ -23,6 +23,8 @@ class Signup : AppCompatActivity() {
     private lateinit var tel_et: EditText
     private lateinit var continuar_btn: Button
     private lateinit var login_btn: TextView
+    private lateinit var bd: FirebaseFirestore
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -32,6 +34,7 @@ class Signup : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        bd = FirebaseFirestore.getInstance()
         backIcon = findViewById(R.id.back_btn)
         nombre_et = findViewById(R.id.et_nombre)
         ap_et = findViewById(R.id.et_ap)
@@ -40,7 +43,6 @@ class Signup : AppCompatActivity() {
         tel_et = findViewById(R.id.et_telefono)
         continuar_btn = findViewById(R.id.continuar_btn)
         login_btn = findViewById(R.id.login_tv)
-
 
         setup()
         sesion()
@@ -51,33 +53,76 @@ class Signup : AppCompatActivity() {
     }
 
     private fun setup() {
-
         backIcon.setOnClickListener {
             onBackPressed()
         }
 
         continuar_btn.setOnClickListener {
-            // Verificar que los campos no esten vacios
-            if(nombre_et.text.isNotEmpty() && ap_et.text.isNotEmpty() && am_et.text.isNotEmpty() && correo_et.text.isNotEmpty() && tel_et.text.isNotEmpty()){
-                // Hacer las verificaciones para los diferentes campos del registro
-                val nombre = nombre_et.text.toString()
-                val ap = ap_et.text.toString()
-                val am = am_et.text.toString()
-                val correo = correo_et.text.toString()
-                val tel = tel_et.text.toString()
-                showSignupPassword(nombre, ap, am, correo, tel)
+            val nombre = nombre_et.text.toString()
+            val ap = ap_et.text.toString()
+            val am = am_et.text.toString()
+            val tel = tel_et.text.toString()
+            val correo = correo_et.text.toString()
 
-                // Agregar la información a la base de datos
+            var errorOccurred = false
+
+            if (nombre.length !in 3..20) {
+                errorOccurred = true
+                nombre_et.error = "El nombre debe tener entre 3 y 20 caracteres."
+            }
+
+            if (ap.length !in 3..10) {
+                errorOccurred = true
+                ap_et.error = "El apellido paterno debe tener entre 3 y 10 caracteres."
+            }
+
+            if (am.length !in 3..10) {
+                errorOccurred = true
+                am_et.error = "El apellido materno debe tener entre 3 y 10 caracteres."
+            }
+
+            if (tel.length != 10) {
+                errorOccurred = true
+                tel_et.error = "El teléfono debe tener 10 dígitos."
+            }
+
+            if (!correo.matches(Regex("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}"))) {
+                errorOccurred = true
+                correo_et.error = "El correo electrónico debe tener un formato válido (ejemplo@dominio.com)."
+            }
+
+            // Verificar si el correo electrónico ya está registrado
+            bd.collection("users").whereEqualTo("Correo", correo).get()
+                .addOnSuccessListener { documents ->
+                    if (documents.isEmpty) {
+                        // El correo electrónico no está registrado, continuar con el registro
+                        if (!errorOccurred) {
+                            showSignupPassword(nombre, ap, am, correo, tel)
+                        }
+                    } else {
+                        // El correo electrónico ya está registrado, mostrar mensaje de alerta
+                        correo_et.error = "El correo electrónico ya está registrado"
+                        errorOccurred = true
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    // Manejar el error
+                    Toast.makeText(this, "Error al verificar el correo electrónico: ${exception.message}", Toast.LENGTH_SHORT).show()
+                }
+
+            // Si hubo un error, no continuamos con el registro
+            if (errorOccurred) {
+                return@setOnClickListener
             }
         }
 
-        login_btn.setOnClickListener{
-            val loginIntnet = Intent(this, LogIn::class.java)
-            startActivity(loginIntnet)
+        login_btn.setOnClickListener {
+            val loginIntent = Intent(this, InicioDeSesion::class.java)
+            startActivity(loginIntent)
         }
     }
 
-    private fun showSignupPassword(nombre: String, ap: String, am:String, correo:String, tel:String) {
+    private fun showSignupPassword(nombre: String, ap: String, am: String, correo: String, tel: String) {
         val SignUpPasswordIntent = Intent(this, SignupPassword::class.java).apply {
             putExtra("nombre", nombre)
             putExtra("ap", ap)
@@ -85,9 +130,7 @@ class Signup : AppCompatActivity() {
             putExtra("correo", correo)
             putExtra("tel", tel)
         }
-        val toast = Toast.makeText(this, "Se guardo la informacion", Toast.LENGTH_SHORT)
-        toast.show()
-
+        Toast.makeText(this, "Se guardo la informacion", Toast.LENGTH_SHORT).show()
         startActivity(SignUpPasswordIntent)
     }
 }

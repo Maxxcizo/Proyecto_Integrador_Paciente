@@ -1,7 +1,10 @@
 package com.example.medsyncpaciente
 
+import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -17,6 +20,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.medsyncpaciente.Adapters.AdaptadorSettings
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -25,6 +30,8 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var backIcon: ImageView
     private lateinit var recyclerView: RecyclerView
     private lateinit var logoutButton: Button
+    private lateinit var nombreTV: TextView
+    private lateinit var bd: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,11 +42,12 @@ class SettingsActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
+        bd = FirebaseFirestore.getInstance()
         toolbar = findViewById(R.id.toolbar_settings)
         toolbarTitle = findViewById(R.id.toolbarsecundario_title)
         backIcon = findViewById(R.id.back_btn)
         logoutButton = findViewById(R.id.logout_btn)
+        nombreTV = findViewById(R.id.name_tv)
 
         // Configuracion del Recycler View y su adaptador
         recyclerView = findViewById(R.id.recyclerView_Settings)
@@ -56,6 +64,30 @@ class SettingsActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         setup()
+
+        val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+        val email = prefs.getString("email", null)
+
+        // Verificar si el correo electrónico ya está registrado
+        bd.collection("users").whereEqualTo("Correo", email).get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    // El correo electrónico no está registrado, continuar con el registro
+                } else {
+                    // El correo electrónico ya está registrado, mostrar mensaje de alerta
+                    val documentSnapshot = documents.documents.first() // Obtener el primer documento
+                    val nombre = documentSnapshot.getString("Nombre(s)")
+                    if (nombre != null) {
+                        nombreTV.text = "Hola, $nombre!"
+                    } else {
+                        nombreTV.text = "Hola!"
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Manejar el error
+                Toast.makeText(this, "Error al verificar el correo electrónico: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun setup() {
@@ -83,6 +115,18 @@ class SettingsActivity : AppCompatActivity() {
     private fun aceptar() {
         val t = Toast.makeText(this, "Aceptaste.", Toast.LENGTH_SHORT)
         t.show()
+
+        val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
+        prefs.clear()
+        prefs.apply()
+
+        FirebaseAuth.getInstance().signOut()
+
+        val loginIntent = Intent(this, InicioDeSesion::class.java)
+        // Agregar flags para limpiar el stack de actividades
+        loginIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(loginIntent)
+        finish()
     }
 
     private fun cancelar() {

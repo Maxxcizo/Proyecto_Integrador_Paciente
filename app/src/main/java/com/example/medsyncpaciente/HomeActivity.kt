@@ -1,5 +1,6 @@
 package com.example.medsyncpaciente
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -49,6 +50,14 @@ class HomeActivity : AppCompatActivity() {
         bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         toolbarTitle = findViewById<TextView>(R.id.toolbar_title)
         toolbar = findViewById<Toolbar>(R.id.toolbar)
+
+        val bundle = intent.extras
+        val email = bundle?.getString("email")
+
+
+        val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
+        prefs.putString("email", email)
+        prefs.apply()
 
         toolbar.title = ""
         setSupportActionBar(toolbar)

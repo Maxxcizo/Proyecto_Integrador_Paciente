@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.medsyncpaciente.ChangePasswordActivity
+import com.example.medsyncpaciente.CambiarPasswordActivity
 import com.example.medsyncpaciente.ReportActivity
-import com.example.medsyncpaciente.ProfileActivity
+import com.example.medsyncpaciente.PerfilActivity
 import com.example.medsyncpaciente.R
 
 class AdaptadorSettings(private val context: Context) : RecyclerView.Adapter<AdaptadorSettings.ViewHolder>() {
@@ -40,8 +40,8 @@ class AdaptadorSettings(private val context: Context) : RecyclerView.Adapter<Ada
 
     private fun onItemClick(position: Int) {
         val intent = when (position) {
-            0 -> Intent(context, ProfileActivity::class.java)
-            1 -> Intent(context, ChangePasswordActivity::class.java)
+            0 -> Intent(context, PerfilActivity::class.java)
+            1 -> Intent(context, CambiarPasswordActivity::class.java)
             2 -> Intent(context, ReportActivity::class.java)
             else -> throw IllegalArgumentException("Invalid position: $position")
         }
