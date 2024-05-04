@@ -69,7 +69,7 @@ class SettingsActivity : AppCompatActivity() {
         val email = prefs.getString("email", null)
 
         // Verificar si el correo electrónico ya está registrado
-        bd.collection("users").whereEqualTo("Correo", email).get()
+        bd.collection("Paciente").whereEqualTo("Correo", email).get()
             .addOnSuccessListener { documents ->
                 if (documents.isEmpty) {
                     // El correo electrónico no está registrado, continuar con el registro

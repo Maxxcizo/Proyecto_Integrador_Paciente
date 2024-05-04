@@ -84,8 +84,8 @@ class SignupPassword : AppCompatActivity() {
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(correo, password)
                 .addOnCompleteListener { createUserTask ->
                     if (createUserTask.isSuccessful) {
-                        addUserToFirestore(nombre, ap, am, correo, tel)
-                        showHome(nombre, correo)
+                        addPacientToFirestore(nombre, ap, am, correo, tel)
+                        showHome(correo, password)
                     } else {
                         showAlert("Error al crear el usuario")
                     }
@@ -101,7 +101,7 @@ class SignupPassword : AppCompatActivity() {
         }
     }
 
-    private fun addUserToFirestore(nombre: String, ap: String, am: String, correo: String, tel: String) {
+    private fun addPacientToFirestore(nombre: String, ap: String, am: String, correo: String, tel: String) {
         val user = hashMapOf(
             "Nombre(s)" to nombre,
             "Apellido Paterno" to ap,
@@ -110,7 +110,7 @@ class SignupPassword : AppCompatActivity() {
             "Telefono" to tel
         )
 
-        bd.collection("users")
+        bd.collection("Paciente")
             .add(user)
             .addOnSuccessListener { documentReference ->
                 // Handle success
@@ -131,10 +131,11 @@ class SignupPassword : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun showHome(nombre: String, correo: String) {
+    private fun showHome(correo: String, password: String) {
         // Iniciar la pantalla home y pasar el nombre
         val homeIntent = Intent(this, HomeActivity::class.java).apply {
             putExtra("email", correo)
+            putExtra("password", password)
         }
         startActivity(homeIntent)
     }

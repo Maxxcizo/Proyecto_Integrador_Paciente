@@ -15,15 +15,15 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class Signup : AppCompatActivity() {
 
-    private lateinit var backIcon: ImageView
-    private lateinit var nombre_et: EditText
-    private lateinit var ap_et: EditText
-    private lateinit var am_et: EditText
-    private lateinit var correo_et: EditText
-    private lateinit var tel_et: EditText
-    private lateinit var continuar_btn: Button
-    private lateinit var login_btn: TextView
-    private lateinit var bd: FirebaseFirestore
+    lateinit var backIcon: ImageView
+    lateinit var nombre_et: EditText
+    lateinit var ap_et: EditText
+    lateinit var am_et: EditText
+    lateinit var correo_et: EditText
+    lateinit var tel_et: EditText
+    lateinit var continuar_btn: Button
+    lateinit var login_btn: TextView
+    lateinit var bd: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +52,7 @@ class Signup : AppCompatActivity() {
         // Agregar lo de shared Preferences para mantener la sesion iniciada al volver a abrir la aplicacion
     }
 
-    private fun setup() {
+    fun setup() {
         backIcon.setOnClickListener {
             onBackPressed()
         }
@@ -92,7 +92,7 @@ class Signup : AppCompatActivity() {
             }
 
             // Verificar si el correo electrónico ya está registrado
-            bd.collection("users").whereEqualTo("Correo", correo).get()
+            bd.collection("Paciente").whereEqualTo("Correo", correo).get()
                 .addOnSuccessListener { documents ->
                     if (documents.isEmpty) {
                         // El correo electrónico no está registrado, continuar con el registro
@@ -122,7 +122,7 @@ class Signup : AppCompatActivity() {
         }
     }
 
-    private fun showSignupPassword(nombre: String, ap: String, am: String, correo: String, tel: String) {
+    fun showSignupPassword(nombre: String, ap: String, am: String, correo: String, tel: String) {
         val SignUpPasswordIntent = Intent(this, SignupPassword::class.java).apply {
             putExtra("nombre", nombre)
             putExtra("ap", ap)

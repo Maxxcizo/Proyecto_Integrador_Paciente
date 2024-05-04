@@ -1,3 +1,4 @@
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -16,6 +17,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -37,12 +39,18 @@ android {
 }
 
 dependencies {
-    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.android.material:material:1.11.0")
-    implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation(libs.material)
+    implementation (libs.androidx.constraintlayout)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.core.ktx)
 
+
+    testImplementation (libs.mockito.core)
+    testImplementation (libs.mockito.kotlin)
+    testImplementation (libs.mockk)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.medsyncpaciente.CambiarCorreoActivity
 import com.example.medsyncpaciente.CambiarPasswordActivity
 import com.example.medsyncpaciente.ReportActivity
 import com.example.medsyncpaciente.PerfilActivity
@@ -14,7 +15,7 @@ import com.example.medsyncpaciente.R
 
 class AdaptadorSettings(private val context: Context) : RecyclerView.Adapter<AdaptadorSettings.ViewHolder>() {
 
-    private val settingsTitles = arrayOf("Ver perfil", "Cambiar Contraseña", "Reportar Errores")
+    private val settingsTitles = arrayOf("Ver perfil", "Cambiar Contraseña","Cambiar Correo", "Reportar Errores")
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.rv_settings, parent, false)
@@ -42,7 +43,8 @@ class AdaptadorSettings(private val context: Context) : RecyclerView.Adapter<Ada
         val intent = when (position) {
             0 -> Intent(context, PerfilActivity::class.java)
             1 -> Intent(context, CambiarPasswordActivity::class.java)
-            2 -> Intent(context, ReportActivity::class.java)
+            2 -> Intent(context, CambiarCorreoActivity::class.java)
+            3 -> Intent(context, ReportActivity::class.java)
             else -> throw IllegalArgumentException("Invalid position: $position")
         }
         context.startActivity(intent)

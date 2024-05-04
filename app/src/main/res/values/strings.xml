@@ -5,6 +5,7 @@
     <string name="logout_button_text">Cerrar Sesión</string>
     <string name="senterror_button_text">Enviar</string>
     <string name="changepassword_button_text">Cambiar Contraseña</string>
+    <string name="cambiarCorreo_button_text">Cambiar Correo</string>
     <string name="saveinfo_button_text">Guardar</string>
     <string name="confirm_button_text">Confirmar</string>
     <string name="posponer_button_text">Posponer</string>
