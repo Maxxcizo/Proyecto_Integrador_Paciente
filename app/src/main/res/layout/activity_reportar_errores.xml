@@ -8,16 +8,16 @@
     tools:context=".ReportActivity">
 
     <include
-        android:id="@+id/toolbar_report"
+        android:id="@+id/toolbar_reportarErrores"
         layout="@layout/toolbarsecundario" />
 
 
     <!-- CardView para contener los elementos para el reporte de errores -->
     <androidx.cardview.widget.CardView
-        android:id="@+id/profile_cardview"
+        android:id="@+id/report_cardview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_report"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_reportarErrores"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:cardCornerRadius="20dp"
@@ -47,7 +47,7 @@
                 android:layout_height="20dp" />
 
             <EditText
-                android:id="@+id/et_nombre"
+                android:id="@+id/tituloReporte_et"
                 android:layout_width="match_parent"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
@@ -58,7 +58,7 @@
                 android:layout_gravity="center"
                 android:background="@drawable/campos_de_texto_redondeados"
                 android:hint="Agrega un título descriptivo"
-
+                android:maxLength="30"
                 />
 
             <Space
@@ -66,7 +66,37 @@
                 android:layout_height="20dp" />
 
             <TextView
-                android:id="@+id/tv_ap"
+                android:id="@+id/frecuencia_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="Cantidad de veces que ha ocurrido"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
+            <EditText
+                android:id="@+id/frecuencia_et"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/campos_de_texto_redondeados"
+                android:ems="10"
+                android:hint="Ingresa la frecuencia del error"
+                android:inputType="number"
+                android:paddingStart="10dp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
+            <TextView
+                android:id="@+id/descripcion_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -79,7 +109,7 @@
                 android:layout_height="20dp" />
 
             <EditText
-                android:id="@+id/et_ap"
+                android:id="@+id/descripcionReporte_et"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:layout_marginLeft="5dp"
@@ -100,7 +130,7 @@
 
 
             <Button
-                android:id="@+id/send_btn"
+                android:id="@+id/enviar_btn"
                 android:layout_width="280dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
