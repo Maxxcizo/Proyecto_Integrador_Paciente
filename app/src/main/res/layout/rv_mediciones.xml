@@ -28,20 +28,20 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/icon"
+                    android:id="@+id/iconoMedicion"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_margin="10dp"
                     android:layout_gravity="center_vertical"
-                    app:srcCompat="@android:drawable/ic_dialog_info"
-                    app:tint="@color/lightblue" />
+                    android:src="@drawable/ic_blood_pressure"
+                    />
 
                 <TextView
                     android:id="@+id/medicion_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:paddingLeft="30dp"
+                    android:paddingLeft="10dp"
                     android:textStyle="bold"
                     android:textColor="@color/black"
                     android:textSize="28sp"
@@ -49,22 +49,48 @@
 
             </LinearLayout>
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/frecuencia_tv"
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:text="2 veces al dia-8:00 a.m. y 8:00 p.m." />
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="15dp" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+
+                <TextView
+                    android:id="@+id/frecuencia_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:text="8:00 a.m."
+                     />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+
+                <TextView
+                    android:id="@+id/horas_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:text="2 veces al dia" />
+
+
+            </LinearLayout>
 
 
             <ImageView
@@ -72,12 +98,15 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_margin="10dp"
-                android:layout_gravity="right"
-                app:srcCompat="@android:drawable/ic_dialog_info"
-                app:tint="@color/lightblue" />
+                android:layout_gravity="right|bottom"
+                android:src="@drawable/notification_alert"
+                />
+
+        </LinearLayout>
 
 
         </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 
 </RelativeLayout>

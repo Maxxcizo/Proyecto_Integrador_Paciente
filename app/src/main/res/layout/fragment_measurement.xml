@@ -11,11 +11,12 @@
         android:id="@+id/recyclerView_Mediciones"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="20dp"
         app:layout_constraintBottom_toTopOf="@id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
 
     <!-- Guía para posicionar el botón flotante -->
     <androidx.constraintlayout.widget.Guideline
@@ -25,15 +26,21 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="1.0" />
 
+
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"
+        android:scaleType="center"
         android:elevation="8dp"
-        android:src="@drawable/add_appointment_icon"
+        android:src="@drawable/ic_chart"
+        style="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

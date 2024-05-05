@@ -5,22 +5,37 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.medsyncpaciente.Adapters.AdaptadorCitas
+import com.example.medsyncpaciente.fragments.MedicamentosFragment
+import com.example.medsyncpaciente.fragments.ProgressFragment
+import com.example.medsyncpaciente.fragments.TodayFragment
+import com.example.medsyncpaciente.fragments.TreatmentFragment
+import com.example.medsyncpaciente.fragments.registromediciones.FrecuenciaFragment
+import com.example.medsyncpaciente.fragments.registromediciones.GlucosaFragment
+import com.example.medsyncpaciente.fragments.registromediciones.OxigenoFragment
+import com.example.medsyncpaciente.fragments.registromediciones.PresionFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class RegistroMedicionesActivity : AppCompatActivity() {
-
+    private lateinit var presionFragment: PresionFragment
+    private lateinit var glucosaFragment: GlucosaFragment
+    private lateinit var oxigenoFragment: OxigenoFragment
+    private lateinit var frecuenciaFragment: FrecuenciaFragment
     private lateinit var toolbar: Toolbar
     private lateinit var toolbarTitle: TextView
     private lateinit var backIcon: ImageView
     private lateinit var registrarButton: Button
+    private lateinit var posponerButton: Button
+    private lateinit var confirmarButton: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -31,16 +46,54 @@ class RegistroMedicionesActivity : AppCompatActivity() {
             insets
         }
 
+        presionFragment = PresionFragment()
+        glucosaFragment = GlucosaFragment()
+        oxigenoFragment = OxigenoFragment()
+        frecuenciaFragment = FrecuenciaFragment()
         toolbar = findViewById<Toolbar>(R.id.toolbar_registroMediciones)
         toolbarTitle = findViewById<TextView>(R.id.toolbarsecundario_title)
         backIcon = findViewById(R.id.back_btn)
         registrarButton = findViewById(R.id.registrarMediciones_btn)
+        posponerButton = findViewById(R.id.posponer_btn)
+        confirmarButton = findViewById(R.id.confirmar_btn)
+
+        val bundle = intent.extras
+        val medicion = bundle?.getString("medicion")
+        val frecuencia = bundle?.getString("frecuencia")
+        val hora = bundle?.getString("hora")
+
+        Toast.makeText(this, "medicion: $medicion", Toast.LENGTH_SHORT).show()
+
+        when (medicion){
+            "Presión Arterial" -> {
+                makeCurrentFragment(presionFragment)
+            }
+            "Glucosa en Sangre" -> {
+                makeCurrentFragment(glucosaFragment)
+            }
+            "Oxigenacion en Sangre" -> {
+                makeCurrentFragment(oxigenoFragment)
+            }
+            "Frecuencia Cardiaca" -> {
+                makeCurrentFragment(frecuenciaFragment)
+            }
+            else -> {
+                Toast.makeText(this, "La opcion no es válida", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         toolbar.title = ""
         toolbarTitle.text = "Registro de Mediciones"
         setSupportActionBar(toolbar)
 
         setup()
+    }
+
+    private fun makeCurrentFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.fl_wrapper, fragment)
+            commit()
+        }
     }
 
     private fun setup() {
@@ -50,6 +103,58 @@ class RegistroMedicionesActivity : AppCompatActivity() {
 
         registrarButton.setOnClickListener {
             startActivity(Intent(this, RegistroSintomasActivity::class.java))
+        }
+
+        confirmarButton.setOnClickListener {
+            // Obtener el fragmento actual
+            val currentFragment = supportFragmentManager.findFragmentById(R.id.fl_wrapper)
+
+            // Verificar si es un fragmento de MeasurementFragment
+            when (currentFragment){
+                is PresionFragment -> {
+                    val medicionesContent = currentFragment.getMedicionesContent()
+
+                    for (medicion in medicionesContent) {
+                        if (medicion.isNotEmpty()) {
+                            // Mostrar un Toast con el contenido del EditText
+                            Toast.makeText(this, "Contenido del EditText: $medicion", Toast.LENGTH_SHORT).show()
+                        } else {
+                            // Mostrar un Toast si el EditText está vacío
+                            Toast.makeText(this, "El EditText está vacío", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                is GlucosaFragment -> {
+                    val editTextContent = currentFragment.getEditTextContent()
+                    if (editTextContent.isNotEmpty()) {
+                        // Mostrar un Toast con el contenido del EditText
+                        Toast.makeText(this, "Contenido del EditText: $editTextContent", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // Mostrar un Toast si el EditText está vacío
+                        Toast.makeText(this, "El EditText está vacío", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                is OxigenoFragment -> {
+                    val editTextContent = currentFragment.getEditTextContent()
+                    if (editTextContent.isNotEmpty()) {
+                        // Mostrar un Toast con el contenido del EditText
+                        Toast.makeText(this, "Contenido del EditText: $editTextContent", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // Mostrar un Toast si el EditText está vacío
+                        Toast.makeText(this, "El EditText está vacío", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                is FrecuenciaFragment -> {
+                    val editTextContent = currentFragment.getEditTextContent()
+                    if (editTextContent.isNotEmpty()) {
+                        // Mostrar un Toast con el contenido del EditText
+                        Toast.makeText(this, "Contenido del EditText: $editTextContent", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // Mostrar un Toast si el EditText está vacío
+                        Toast.makeText(this, "El EditText está vacío", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
     }
 }
