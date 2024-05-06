@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.medsyncpaciente.Adapters.AdaptadorMediciones
@@ -30,6 +31,7 @@ class GlucosaFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var valorMedicion: EditText
+    private lateinit var horaMedicion: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,9 +48,16 @@ class GlucosaFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_glucosa, container, false)
         valorMedicion = view.findViewById<EditText>(R.id.medicion_et)
+        horaMedicion = view.findViewById<TextView>(R.id.hora_tv)
+
+        getHoraMedicion()
 
         return view
 
+    }
+
+    private fun getHoraMedicion() {
+        // Agregar la logica para obtener la hora de la medicion de la base de datos
     }
 
     fun getEditTextContent(): String {

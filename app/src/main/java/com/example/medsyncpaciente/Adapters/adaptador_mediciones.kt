@@ -2,6 +2,7 @@ package com.example.medsyncpaciente.Adapters
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,15 +14,26 @@ import com.example.medsyncpaciente.ConfirmarTomaActivity
 import com.example.medsyncpaciente.GraficasMedicionesActivity
 import com.example.medsyncpaciente.R
 import com.example.medsyncpaciente.RegistroMedicionesActivity
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FieldPath
+import com.google.firebase.firestore.FirebaseFirestore
 
 class AdaptadorMediciones(private val context: Context) : RecyclerView.Adapter<AdaptadorMediciones.ViewHolder>() {
 
-    // hora,medicina,dosis
+    private val diccionarioMediciones = mapOf(
+        1 to "Presión Arterial",
+        2 to "Glucosa en Sangre",
+        3 to "Oxigenacion en Sangre",
+        4 to "Frecuencia Cardiaca"
+    )
 
-    private val medicion = arrayOf("Presión Arterial", "Glucosa en Sangre", "Oxigenacion en Sangre", "Frecuencia Cardiaca")
     private val horario = arrayOf("8:00 a.m.", "9:00 a.m.", "10:00 a.m.", "11:00 a.m.")
     private val frecuencia = arrayOf("2 veces al día", "1 vez al día", "3 veces al día", "4 veces al día")
     private val imageReference = arrayOf(R.drawable.ic_blood_pressure, R.drawable.ic_blood_glucose, R.drawable.ic_blood_oxygen, R.drawable.ic_heart_rate)
+
+    private val db = FirebaseFirestore.getInstance()
+
+    private var mediciones = mutableListOf<Int>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.rv_mediciones, parent, false)
@@ -29,29 +41,25 @@ class AdaptadorMediciones(private val context: Context) : RecyclerView.Adapter<A
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val med = medicion[position]
-        val frec = frecuencia[position]
-        val hor = horario[position]
-        val ir = imageReference[position]
-
-        holder.mediciontext.text = med
-        holder.frecuenciatext.text = frec
-        holder.horarioText.text = hor
-        holder.iconoImage.setImageResource(ir)
-        holder.card.setOnClickListener{
-            // Acción a realizar cuando se haga clic en el botón "go"
-            // Por ejemplo, puedes abrir una nueva actividad
-            val intent = Intent(context, RegistroMedicionesActivity::class.java).apply {
-                putExtra("medicion", med)
-                putExtra("frecuencia", frec)
-                putExtra("hora", hor)
+        val med = mediciones.getOrNull(position)
+        if (med != null) {
+            holder.mediciontext.text = diccionarioMediciones[med]
+            holder.frecuenciatext.text = frecuencia[position]
+            holder.horarioText.text = horario[position]
+            holder.iconoImage.setImageResource(imageReference[position])
+            holder.card.setOnClickListener {
+                val intent = Intent(context, RegistroMedicionesActivity::class.java).apply {
+                    putExtra("medicion", diccionarioMediciones[med])
+                    putExtra("frecuencia", frecuencia[position])
+                    putExtra("hora", horario[position])
+                }
+                context.startActivity(intent)
             }
-            context.startActivity(intent)
         }
     }
 
     override fun getItemCount(): Int {
-        return medicion.size
+        return mediciones.size
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -62,4 +70,40 @@ class AdaptadorMediciones(private val context: Context) : RecyclerView.Adapter<A
         var card: CardView = itemView.findViewById(R.id.mediciones_cardview)
     }
 
+    // Método para cargar las mediciones desde Firestore
+    fun cargarMediciones() {
+        val idsDocumentosMedicion = mutableListOf<String>()
+
+        db.collection("Registro de Medicion")
+            .whereEqualTo("Estado", "Asignado")
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val medicionRef = document.get("MedicionID") as DocumentReference?
+                    if (medicionRef != null) {
+                        val medicionID = medicionRef.id
+                        idsDocumentosMedicion.add(medicionID)
+                    }
+                }
+
+                db.collection("Medicion")
+                    .whereIn(FieldPath.documentId(), idsDocumentosMedicion)
+                    .get()
+                    .addOnSuccessListener { medicionDocuments ->
+                        for (d in medicionDocuments) {
+                            val tipo = d.getDouble("Tipo")
+                            if (tipo != null && diccionarioMediciones.containsKey(tipo.toInt())) {
+                                mediciones.add(tipo.toInt())
+                            }
+                        }
+                        notifyDataSetChanged()
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.d("TAG", "Error obteniendo documentos de Medicion: ", exception)
+                    }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("TAG", "Error obteniendo documentos de Registro de Medicion: ", exception)
+            }
+    }
 }

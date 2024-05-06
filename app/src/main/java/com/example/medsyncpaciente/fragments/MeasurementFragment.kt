@@ -52,6 +52,8 @@ class MeasurementFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
 
+        adapter.cargarMediciones()
+
         botonFlotante.setOnClickListener {
             // Crear un Intent para iniciar la actividad deseada
             val intent = Intent(requireContext(), GraficasMedicionesActivity::class.java)

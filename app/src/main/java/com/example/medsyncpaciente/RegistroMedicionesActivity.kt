@@ -12,18 +12,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.medsyncpaciente.Adapters.AdaptadorCitas
-import com.example.medsyncpaciente.fragments.MedicamentosFragment
-import com.example.medsyncpaciente.fragments.ProgressFragment
-import com.example.medsyncpaciente.fragments.TodayFragment
-import com.example.medsyncpaciente.fragments.TreatmentFragment
 import com.example.medsyncpaciente.fragments.registromediciones.FrecuenciaFragment
 import com.example.medsyncpaciente.fragments.registromediciones.GlucosaFragment
 import com.example.medsyncpaciente.fragments.registromediciones.OxigenoFragment
 import com.example.medsyncpaciente.fragments.registromediciones.PresionFragment
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class RegistroMedicionesActivity : AppCompatActivity() {
     private lateinit var presionFragment: PresionFragment
@@ -112,8 +104,12 @@ class RegistroMedicionesActivity : AppCompatActivity() {
             // Verificar si es un fragmento de MeasurementFragment
             when (currentFragment){
                 is PresionFragment -> {
+                    // Obtener el arreglo que contiene el texto de los 3 EditText
                     val medicionesContent = currentFragment.getMedicionesContent()
 
+                    var algunEditTextVacio = false
+
+                    // For para recorrer cada elemento del arreglo, en este caso la lista contiene el texto de los 3 EditText
                     for (medicion in medicionesContent) {
                         if (medicion.isNotEmpty()) {
                             // Mostrar un Toast con el contenido del EditText
@@ -121,37 +117,90 @@ class RegistroMedicionesActivity : AppCompatActivity() {
                         } else {
                             // Mostrar un Toast si el EditText está vacío
                             Toast.makeText(this, "El EditText está vacío", Toast.LENGTH_SHORT).show()
+                            algunEditTextVacio = true
+                            break
                         }
                     }
+
+                    // Verificar si algún EditText está vacío
+                    if (algunEditTextVacio) {
+                        // Mostrar un Toast indicando que al menos un EditText está vacío
+                        Toast.makeText(this, "Al menos un EditText está vacío", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // Mostrar un Toast indicando que todos los EditText tienen contenido
+                        Toast.makeText(this, "Todos los EditText tienen contenido", Toast.LENGTH_SHORT).show()
+
+                        // Aquí puedes continuar con el resto de tu lógica
+                    }
+
                 }
                 is GlucosaFragment -> {
                     val editTextContent = currentFragment.getEditTextContent()
+                    var editTextVacio = false
                     if (editTextContent.isNotEmpty()) {
                         // Mostrar un Toast con el contenido del EditText
                         Toast.makeText(this, "Contenido del EditText: $editTextContent", Toast.LENGTH_SHORT).show()
                     } else {
                         // Mostrar un Toast si el EditText está vacío
                         Toast.makeText(this, "El EditText está vacío", Toast.LENGTH_SHORT).show()
+                        editTextVacio = true
+                    }
+
+                    // Verificar si algún EditText está vacío
+                    if (editTextVacio) {
+                        // Mostrar un Toast indicando que al menos un EditText está vacío
+                        Toast.makeText(this, "Al menos un EditText está vacío", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // Mostrar un Toast indicando que todos los EditText tienen contenido
+                        Toast.makeText(this, "Todos los EditText tienen contenido", Toast.LENGTH_SHORT).show()
+
+                        // Aquí puedes continuar con el resto de tu lógica
                     }
                 }
                 is OxigenoFragment -> {
                     val editTextContent = currentFragment.getEditTextContent()
+                    var editTextVacio = false
                     if (editTextContent.isNotEmpty()) {
                         // Mostrar un Toast con el contenido del EditText
                         Toast.makeText(this, "Contenido del EditText: $editTextContent", Toast.LENGTH_SHORT).show()
                     } else {
                         // Mostrar un Toast si el EditText está vacío
                         Toast.makeText(this, "El EditText está vacío", Toast.LENGTH_SHORT).show()
+                        editTextVacio = true
+                    }
+
+                    // Verificar si algún EditText está vacío
+                    if (editTextVacio) {
+                        // Mostrar un Toast indicando que al menos un EditText está vacío
+                        Toast.makeText(this, "Al menos un EditText está vacío", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // Mostrar un Toast indicando que todos los EditText tienen contenido
+                        Toast.makeText(this, "Todos los EditText tienen contenido", Toast.LENGTH_SHORT).show()
+
+                        // Aquí puedes continuar con el resto de tu lógica
                     }
                 }
                 is FrecuenciaFragment -> {
                     val editTextContent = currentFragment.getEditTextContent()
+                    var editTextVacio = false
                     if (editTextContent.isNotEmpty()) {
                         // Mostrar un Toast con el contenido del EditText
                         Toast.makeText(this, "Contenido del EditText: $editTextContent", Toast.LENGTH_SHORT).show()
                     } else {
                         // Mostrar un Toast si el EditText está vacío
                         Toast.makeText(this, "El EditText está vacío", Toast.LENGTH_SHORT).show()
+                        editTextVacio = true
+                    }
+
+                    // Verificar si algún EditText está vacío
+                    if (editTextVacio) {
+                        // Mostrar un Toast indicando que al menos un EditText está vacío
+                        Toast.makeText(this, "Al menos un EditText está vacío", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // Mostrar un Toast indicando que todos los EditText tienen contenido
+                        Toast.makeText(this, "Todos los EditText tienen contenido", Toast.LENGTH_SHORT).show()
+
+                        // Aquí puedes continuar con el resto de tu lógica
                     }
                 }
             }
