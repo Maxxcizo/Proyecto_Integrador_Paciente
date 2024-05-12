@@ -10,8 +10,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.medsyncpaciente.ConfirmarTomaActivity
-import com.example.medsyncpaciente.GraficasMedicionesActivity
 import com.example.medsyncpaciente.R
 import com.example.medsyncpaciente.RegistroMedicionesActivity
 import com.google.firebase.firestore.DocumentReference
@@ -27,13 +25,20 @@ class AdaptadorMediciones(private val context: Context) : RecyclerView.Adapter<A
         4 to "Frecuencia Cardiaca"
     )
 
+    private val diccionarioFrecuencia = mapOf(
+        1 to "1 vez al día",
+        2 to "2 veces al día",
+        3 to "3 veces al día",
+        4 to "4 veces al día"
+    )
+
     private val horario = arrayOf("8:00 a.m.", "9:00 a.m.", "10:00 a.m.", "11:00 a.m.")
-    private val frecuencia = arrayOf("2 veces al día", "1 vez al día", "3 veces al día", "4 veces al día")
     private val imageReference = arrayOf(R.drawable.ic_blood_pressure, R.drawable.ic_blood_glucose, R.drawable.ic_blood_oxygen, R.drawable.ic_heart_rate)
 
     private val db = FirebaseFirestore.getInstance()
 
     private var mediciones = mutableListOf<Int>()
+    private var frecuencia = mutableListOf<Int>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.rv_mediciones, parent, false)
@@ -42,15 +47,16 @@ class AdaptadorMediciones(private val context: Context) : RecyclerView.Adapter<A
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val med = mediciones.getOrNull(position)
+        val frec = frecuencia.getOrNull(position)
         if (med != null) {
             holder.mediciontext.text = diccionarioMediciones[med]
-            holder.frecuenciatext.text = frecuencia[position]
+            holder.frecuenciatext.text = diccionarioFrecuencia.getOrDefault(frec, "")
             holder.horarioText.text = horario[position]
             holder.iconoImage.setImageResource(imageReference[position])
             holder.card.setOnClickListener {
                 val intent = Intent(context, RegistroMedicionesActivity::class.java).apply {
                     putExtra("medicion", diccionarioMediciones[med])
-                    putExtra("frecuencia", frecuencia[position])
+                    putExtra("frecuencia", diccionarioFrecuencia.getOrDefault(frec, ""))
                     putExtra("hora", horario[position])
                 }
                 context.startActivity(intent)
@@ -101,9 +107,36 @@ class AdaptadorMediciones(private val context: Context) : RecyclerView.Adapter<A
                     .addOnFailureListener { exception ->
                         Log.d("TAG", "Error obteniendo documentos de Medicion: ", exception)
                     }
+
+                // Limpiar la lista de frecuencia antes de agregar nuevos datos
+                frecuencia.clear()
+
+                db.collection("Frecuencia")
+                    .whereIn("MedicionID", idsDocumentosMedicion)
+                    .get()
+                    .addOnSuccessListener { frecuenciaDocuments ->
+                        Log.d("TAG", "Cantidad de documentos de frecuencia: ${frecuenciaDocuments.size()}")
+                        for (f in frecuenciaDocuments) {
+                            Log.d("TAG", "Documento de frecuencia: $f")
+                            val medicionID = f.getDocumentReference("MedicionID")?.id
+                            if (medicionID != null && idsDocumentosMedicion.contains(medicionID)) {
+                                val frec = f.getLong("Frecuencia")
+                                Log.d("TAG", "Frecuencia obtenida: $frec")
+                                if (frec != null && diccionarioFrecuencia.containsKey(frec.toInt())) {
+                                    frecuencia.add(frec.toInt())
+                                }
+                            }
+                        }
+                        notifyDataSetChanged()
+                        Log.d("TAG", "frecuencias ,$frecuencia")
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.d("TAG", "Error obteniendo documentos de Frecuencia: ", exception)
+                    }
             }
             .addOnFailureListener { exception ->
                 Log.d("TAG", "Error obteniendo documentos de Registro de Medicion: ", exception)
             }
     }
+
 }
