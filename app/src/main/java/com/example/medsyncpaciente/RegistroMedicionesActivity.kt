@@ -1,5 +1,6 @@
 package com.example.medsyncpaciente
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -7,15 +8,22 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import com.example.medsyncpaciente.fragments.MeasurementFragment
 import com.example.medsyncpaciente.fragments.registromediciones.FrecuenciaFragment
 import com.example.medsyncpaciente.fragments.registromediciones.GlucosaFragment
 import com.example.medsyncpaciente.fragments.registromediciones.OxigenoFragment
 import com.example.medsyncpaciente.fragments.registromediciones.PresionFragment
+import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import kotlin.math.roundToInt
 
 class RegistroMedicionesActivity : AppCompatActivity() {
     private lateinit var presionFragment: PresionFragment
@@ -28,10 +36,12 @@ class RegistroMedicionesActivity : AppCompatActivity() {
     private lateinit var registrarButton: Button
     private lateinit var posponerButton: Button
     private lateinit var confirmarButton: Button
+    private lateinit var db: FirebaseFirestore
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_registro_mediciones)
+        enableEdgeToEdge()
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -42,36 +52,27 @@ class RegistroMedicionesActivity : AppCompatActivity() {
         glucosaFragment = GlucosaFragment()
         oxigenoFragment = OxigenoFragment()
         frecuenciaFragment = FrecuenciaFragment()
-        toolbar = findViewById<Toolbar>(R.id.toolbar_registroMediciones)
-        toolbarTitle = findViewById<TextView>(R.id.toolbarsecundario_title)
+
+        toolbar = findViewById(R.id.toolbar_registroMediciones)
+        toolbarTitle = findViewById(R.id.toolbarsecundario_title)
         backIcon = findViewById(R.id.back_btn)
         registrarButton = findViewById(R.id.registrarMediciones_btn)
         posponerButton = findViewById(R.id.posponer_btn)
         confirmarButton = findViewById(R.id.confirmar_btn)
 
+        db = FirebaseFirestore.getInstance()
+
         val bundle = intent.extras
         val medicion = bundle?.getString("medicion")
-        val frecuencia = bundle?.getString("frecuencia")
-        val hora = bundle?.getString("hora")
 
         Toast.makeText(this, "medicion: $medicion", Toast.LENGTH_SHORT).show()
 
-        when (medicion){
-            "Presión Arterial" -> {
-                makeCurrentFragment(presionFragment)
-            }
-            "Glucosa en Sangre" -> {
-                makeCurrentFragment(glucosaFragment)
-            }
-            "Oxigenacion en Sangre" -> {
-                makeCurrentFragment(oxigenoFragment)
-            }
-            "Frecuencia Cardiaca" -> {
-                makeCurrentFragment(frecuenciaFragment)
-            }
-            else -> {
-                Toast.makeText(this, "La opcion no es válida", Toast.LENGTH_SHORT).show()
-            }
+        when (medicion) {
+            "Presion Arterial" -> makeCurrentFragment(presionFragment)
+            "Glucosa en sangre" -> makeCurrentFragment(glucosaFragment)
+            "Oxigenacion en Sangre" -> makeCurrentFragment(oxigenoFragment)
+            "Frecuencia Cardiaca" -> makeCurrentFragment(frecuenciaFragment)
+            else -> Toast.makeText(this, "La opción no es válida", Toast.LENGTH_SHORT).show()
         }
 
         toolbar.title = ""
@@ -98,112 +99,204 @@ class RegistroMedicionesActivity : AppCompatActivity() {
         }
 
         confirmarButton.setOnClickListener {
-            // Obtener el fragmento actual
-            val currentFragment = supportFragmentManager.findFragmentById(R.id.fl_wrapper)
-
-            // Verificar si es un fragmento de MeasurementFragment
-            when (currentFragment){
-                is PresionFragment -> {
-                    // Obtener el arreglo que contiene el texto de los 3 EditText
-                    val medicionesContent = currentFragment.getMedicionesContent()
-
-                    var algunEditTextVacio = false
-
-                    // For para recorrer cada elemento del arreglo, en este caso la lista contiene el texto de los 3 EditText
-                    for (medicion in medicionesContent) {
-                        if (medicion.isNotEmpty()) {
-                            // Mostrar un Toast con el contenido del EditText
-                            Toast.makeText(this, "Contenido del EditText: $medicion", Toast.LENGTH_SHORT).show()
-                        } else {
-                            // Mostrar un Toast si el EditText está vacío
-                            Toast.makeText(this, "El EditText está vacío", Toast.LENGTH_SHORT).show()
-                            algunEditTextVacio = true
-                            break
-                        }
-                    }
-
-                    // Verificar si algún EditText está vacío
-                    if (algunEditTextVacio) {
-                        // Mostrar un Toast indicando que al menos un EditText está vacío
-                        Toast.makeText(this, "Al menos un EditText está vacío", Toast.LENGTH_SHORT).show()
-                    } else {
-                        // Mostrar un Toast indicando que todos los EditText tienen contenido
-                        Toast.makeText(this, "Todos los EditText tienen contenido", Toast.LENGTH_SHORT).show()
-
-                        // Aquí puedes continuar con el resto de tu lógica
-                    }
-
+            AlertDialog.Builder(this).apply {
+                setTitle("Aviso")
+                setMessage("¿Seguro que quieres registrar tu medición?")
+                setCancelable(false)
+                setPositiveButton("Confirmar") { dialog, _ ->
+                    aceptar()
+                    dialog.dismiss()
                 }
-                is GlucosaFragment -> {
-                    val editTextContent = currentFragment.getEditTextContent()
-                    var editTextVacio = false
-                    if (editTextContent.isNotEmpty()) {
-                        // Mostrar un Toast con el contenido del EditText
-                        Toast.makeText(this, "Contenido del EditText: $editTextContent", Toast.LENGTH_SHORT).show()
-                    } else {
-                        // Mostrar un Toast si el EditText está vacío
-                        Toast.makeText(this, "El EditText está vacío", Toast.LENGTH_SHORT).show()
-                        editTextVacio = true
-                    }
-
-                    // Verificar si algún EditText está vacío
-                    if (editTextVacio) {
-                        // Mostrar un Toast indicando que al menos un EditText está vacío
-                        Toast.makeText(this, "Al menos un EditText está vacío", Toast.LENGTH_SHORT).show()
-                    } else {
-                        // Mostrar un Toast indicando que todos los EditText tienen contenido
-                        Toast.makeText(this, "Todos los EditText tienen contenido", Toast.LENGTH_SHORT).show()
-
-                        // Aquí puedes continuar con el resto de tu lógica
-                    }
+                setNegativeButton("Cancelar") { dialog, _ ->
+                    cancelar()
+                    dialog.dismiss()
                 }
-                is OxigenoFragment -> {
-                    val editTextContent = currentFragment.getEditTextContent()
-                    var editTextVacio = false
-                    if (editTextContent.isNotEmpty()) {
-                        // Mostrar un Toast con el contenido del EditText
-                        Toast.makeText(this, "Contenido del EditText: $editTextContent", Toast.LENGTH_SHORT).show()
-                    } else {
-                        // Mostrar un Toast si el EditText está vacío
-                        Toast.makeText(this, "El EditText está vacío", Toast.LENGTH_SHORT).show()
-                        editTextVacio = true
-                    }
+            }.show()
+        }
+    }
 
-                    // Verificar si algún EditText está vacío
-                    if (editTextVacio) {
-                        // Mostrar un Toast indicando que al menos un EditText está vacío
-                        Toast.makeText(this, "Al menos un EditText está vacío", Toast.LENGTH_SHORT).show()
-                    } else {
-                        // Mostrar un Toast indicando que todos los EditText tienen contenido
-                        Toast.makeText(this, "Todos los EditText tienen contenido", Toast.LENGTH_SHORT).show()
+    private fun aceptar() {
+        Toast.makeText(this, "Aceptaste.", Toast.LENGTH_SHORT).show()
+        val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+        val pacienteId = prefs.getString("pacienteId", null)
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fl_wrapper)
 
-                        // Aquí puedes continuar con el resto de tu lógica
-                    }
-                }
-                is FrecuenciaFragment -> {
-                    val editTextContent = currentFragment.getEditTextContent()
-                    var editTextVacio = false
-                    if (editTextContent.isNotEmpty()) {
-                        // Mostrar un Toast con el contenido del EditText
-                        Toast.makeText(this, "Contenido del EditText: $editTextContent", Toast.LENGTH_SHORT).show()
-                    } else {
-                        // Mostrar un Toast si el EditText está vacío
-                        Toast.makeText(this, "El EditText está vacío", Toast.LENGTH_SHORT).show()
-                        editTextVacio = true
-                    }
+        println("Current Fragment: $currentFragment")
 
-                    // Verificar si algún EditText está vacío
-                    if (editTextVacio) {
-                        // Mostrar un Toast indicando que al menos un EditText está vacío
-                        Toast.makeText(this, "Al menos un EditText está vacío", Toast.LENGTH_SHORT).show()
-                    } else {
-                        // Mostrar un Toast indicando que todos los EditText tienen contenido
-                        Toast.makeText(this, "Todos los EditText tienen contenido", Toast.LENGTH_SHORT).show()
+        println("Paciente Id: $pacienteId")
 
-                        // Aquí puedes continuar con el resto de tu lógica
+        when (currentFragment) {
+            is PresionFragment -> {
+                println("PresionFragment detected.")
+                val medicionesContent = currentFragment.getMedicionesContent()
+                println("Mediciones Content: $medicionesContent")
+                if (medicionesContent != null) {
+                    if (validateMeasurements(medicionesContent)) {
+                        // Consultar las mediciones de la última semana
+                        consultarMedicionesSemanaAnterior(medicionesContent, "Presion Arterial", pacienteId)
                     }
                 }
             }
+            is GlucosaFragment -> {
+                println("GlucosaFragment detected.")
+                val medicionesContent = currentFragment.getMedicionesContent()
+                println("Mediciones Content: $medicionesContent")
+                if (medicionesContent != null) {
+                    if (validateMeasurements(medicionesContent)) {
+                        // Consultar las mediciones de la última semana
+                        consultarMedicionesSemanaAnterior(medicionesContent, "Glucosa en Sangre", pacienteId)
+                    }
+                }
+            }
+            is OxigenoFragment -> {
+                println("OxigenoFragment detected.")
+                val medicionesContent = currentFragment.getMedicionesContent()
+                println("Mediciones Content: $medicionesContent")
+                if (medicionesContent != null) {
+                    println("Mediciones Content no es nulo")
+                    if (validateMeasurements(medicionesContent)) {
+                        // Consultar las mediciones de la última semana
+                        consultarMedicionesSemanaAnterior(medicionesContent, "Oxigenacion en Sangre", pacienteId)
+                    }
+                }
+            }
+            is FrecuenciaFragment -> {
+                println("FrecuenciaFragment detected.")
+                val medicionesContent = currentFragment.getMedicionesContent()
+                println("Mediciones Content: $medicionesContent")
+                if (medicionesContent != null) {
+                    if (validateMeasurements(medicionesContent)) {
+                        // Consultar las mediciones de la última semana
+                        consultarMedicionesSemanaAnterior(medicionesContent, "Frecuencia Cardiaca", pacienteId)
+                    }
+                }
+            }
+            else -> {
+                println("Fragmento no válido.")
+                Toast.makeText(this, "Fragmento no válido", Toast.LENGTH_SHORT).show()
+            }
         }
+    }
+
+
+
+    private fun validateMeasurements(medicionesContent: List<String>): Boolean {
+        var isValid = true
+        for (medicion in medicionesContent) {
+            if (medicion.isEmpty()) {
+                Toast.makeText(this, "Al menos un EditText está vacío", Toast.LENGTH_SHORT).show()
+                isValid = false
+                break
+            }
+            if (medicion.toInt() !in 0..200) {
+                Toast.makeText(this, "Valores Fuera de Rango", Toast.LENGTH_SHORT).show()
+                isValid = false
+                break
+            }
+        }
+        println("is valid? $isValid")
+        return isValid
+    }
+
+    private fun addMeasurementToDatabase(
+        measurementType: String,
+        medicionesContent: List<String>,
+        pacienteId: String?
+    ) {
+        val measurementRef = db.collection("Paciente").document(pacienteId!!)
+            .collection("Mediciones").document(measurementType)
+            .collection("Registro de Medicion")
+
+        val fechaActual = Date()
+        val formatoFechaHora = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val fechaHoraFormateada = formatoFechaHora.format(fechaActual)
+
+        val nuevaMedicionData = when (measurementType) {
+            "PresionFragment" -> mapOf(
+                "valor S" to medicionesContent[0],
+                "valor D" to medicionesContent[1],
+                "valor F" to medicionesContent[2],
+                "Fecha y Hora" to fechaHoraFormateada
+            )
+            else -> mapOf(
+                "valor" to medicionesContent[0],
+                "Fecha y Hora" to fechaHoraFormateada
+            )
+        }
+
+        measurementRef.add(nuevaMedicionData)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Nueva medición agregada correctamente", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error al agregar nueva medición: $e", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun consultarMedicionesSemanaAnterior(medicionesContent: List<String>, medicionType: String, pacienteId: String?) {
+
+        // Rango de tolerancia para la medición
+        val rango = 15 // Rango de ±15 mg/dL
+
+        // Calcular la fecha de hace 7 días
+        val calendar = Calendar.getInstance()
+        calendar.time = Date()
+        calendar.add(Calendar.DAY_OF_YEAR, -7)
+        val fechaHaceUnaSemana = calendar.time
+        val formatoFechaHora = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+
+        // Formatear la fecha de hace 7 días al formato de tu base de datos
+        val fechaHaceUnaSemanaString = formatoFechaHora.format(fechaHaceUnaSemana)
+
+        println("fecha hace una semana: $fechaHaceUnaSemanaString")
+
+        db.collection("Paciente").document(pacienteId!!)
+            .collection("Mediciones").document(medicionType)
+            .collection("Registro de Medicion")
+            .whereGreaterThan("Fecha y Hora", fechaHaceUnaSemanaString)
+            .get()
+            .addOnSuccessListener { documents ->
+                val medicionesSemana = mutableListOf<Int>()
+                for (document in documents) {
+                    // Obtener el valor de la medición
+                    val valor = document.getString("valor")?.toInt()
+                    valor?.let {
+                        medicionesSemana.add(it.toInt())
+                    }
+                }
+
+                println("Mediciones de la ultima semana: $medicionesSemana")
+
+                // Calcular la media de las mediciones de la última semana
+                val media = medicionesSemana.average().roundToInt()
+
+                println("Promedio Mediciones de la ultima semana: $media")
+
+                // Comparar la nueva medición con la media
+                for(medicion in medicionesContent){
+                    if (medicion.toInt() in (media - rango)..(media + rango)) {
+                        Toast.makeText(this, "La medición está dentro de la media", Toast.LENGTH_SHORT)
+                            .show()
+                        println("Medicion dentro del rango: $medicion")
+                    } else {
+                        Toast.makeText(this, "La medición está fuera de la media", Toast.LENGTH_SHORT)
+                            .show()
+                        println("Medicion fuera del rango: $medicion")
+                    }
+                }
+
+                // Agregar las mediciones a la base de datos
+                addMeasurementToDatabase("Oxigenacion en Sangre", medicionesContent, pacienteId)
+
+            }
+            .addOnFailureListener { e ->
+                // Manejar el error
+                Toast.makeText(this, "Error al consultar mediciones: $e", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
+    private fun cancelar() {
+        Toast.makeText(this, "Rechazaste.", Toast.LENGTH_SHORT).show()
     }
 }

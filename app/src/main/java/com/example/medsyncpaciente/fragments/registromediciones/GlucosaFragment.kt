@@ -12,8 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.medsyncpaciente.Adapters.AdaptadorMediciones
 import com.example.medsyncpaciente.GraficasMedicionesActivity
+import com.example.medsyncpaciente.MeassurementFragment
 import com.example.medsyncpaciente.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.text.SimpleDateFormat
+import java.util.Date
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,13 +28,13 @@ private const val ARG_PARAM2 = "param2"
  * Use the [GlucosaFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class GlucosaFragment : Fragment() {
+class GlucosaFragment : Fragment(), MeassurementFragment {
     // TODO: Rename and change types of parameters
 
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var valorMedicion: EditText
-    private lateinit var horaMedicion: TextView
+    private lateinit var hora: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,21 +51,28 @@ class GlucosaFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_glucosa, container, false)
         valorMedicion = view.findViewById<EditText>(R.id.medicion_et)
-        horaMedicion = view.findViewById<TextView>(R.id.hora_tv)
+        hora = view.findViewById<TextView>(R.id.hora_tv)
 
-        getHoraMedicion()
+        // Obtener la hora actual y formatearla
+        val horaActual = obtenerHoraActual()
+        hora.text = horaActual
 
         return view
 
     }
 
-    private fun getHoraMedicion() {
-        // Agregar la logica para obtener la hora de la medicion de la base de datos
+    // Función para obtener la hora actual en el formato deseado
+    private fun obtenerHoraActual(): String {
+        val formatoHora = SimpleDateFormat("hh:mm a") // Formato de hora (por ejemplo: 11:00 a.m.)
+        val fechaActual = Date()
+        return formatoHora.format(fechaActual)
     }
 
-    fun getEditTextContent(): String {
-        return valorMedicion.text.toString()
+    // Método para obtener las mediciones de la presión arterial
+    override fun getMedicionesContent(): List<String> {
+        return listOf(valorMedicion.text.toString())
     }
+
 
     companion object {
         /**

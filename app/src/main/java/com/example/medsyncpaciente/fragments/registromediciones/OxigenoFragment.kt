@@ -6,7 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.TextView
+import com.example.medsyncpaciente.MeassurementFragment
 import com.example.medsyncpaciente.R
+import java.text.SimpleDateFormat
+import java.util.Date
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -18,11 +22,12 @@ private const val ARG_PARAM2 = "param2"
  * Use the [OxigenoFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class OxigenoFragment : Fragment() {
+class OxigenoFragment : Fragment(), MeassurementFragment {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var valorMedicion: EditText
+    private lateinit var hora: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,12 +44,25 @@ class OxigenoFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_oxigeno, container, false)
         valorMedicion = view.findViewById<EditText>(R.id.medicion_et)
+        hora = view.findViewById<TextView>(R.id.hora_tv)
+
+        // Obtener la hora actual y formatearla
+        val horaActual = obtenerHoraActual()
+        hora.text = horaActual
 
         return view
     }
 
-    fun getEditTextContent(): String {
-        return valorMedicion.text.toString()
+    // Función para obtener la hora actual en el formato deseado
+    private fun obtenerHoraActual(): String {
+        val formatoHora = SimpleDateFormat("hh:mm a") // Formato de hora (por ejemplo: 11:00 a.m.)
+        val fechaActual = Date()
+        return formatoHora.format(fechaActual)
+    }
+
+    // Método para obtener las mediciones de la presión arterial
+    override fun getMedicionesContent(): List<String> {
+        return listOf(valorMedicion.text.toString())
     }
 
 

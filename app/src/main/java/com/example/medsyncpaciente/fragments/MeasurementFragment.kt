@@ -1,5 +1,6 @@
 package com.example.medsyncpaciente.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,9 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.medsyncpaciente.Adapters.AdaptadorMedicamentos
 import com.example.medsyncpaciente.Adapters.AdaptadorMediciones
-import com.example.medsyncpaciente.AddAppointmentActivity
 import com.example.medsyncpaciente.GraficasMedicionesActivity
 import com.example.medsyncpaciente.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -46,13 +45,20 @@ class MeasurementFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_measurement, container, false)
+
+        // se obtiene la instancia de los sharedPreferences
+        val sharedPreferences = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+
         recyclerView = view.findViewById(R.id.recyclerView_Mediciones)
         botonFlotante = view.findViewById<FloatingActionButton>(R.id.fab)
-        val adapter = AdaptadorMediciones(requireActivity()) // Usar requireActivity() para obtener el contexto de la actividad
+        val adapter = AdaptadorMediciones(requireActivity(), sharedPreferences) // Usar requireActivity() para obtener el contexto de la actividad y ademas se mandan las shared Preferences
         recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = adapter
 
-        adapter.cargarMediciones()
+        adapter.cargarMediciones {
+            // Todas las mediciones se han cargado, iniciar la siguiente actividad
+            // Aquí puedes llamar al método para configurar el RecyclerView
+            recyclerView.adapter = adapter
+        }
 
         botonFlotante.setOnClickListener {
             // Crear un Intent para iniciar la actividad deseada
