@@ -2,6 +2,7 @@ package com.example.medsyncpaciente.Adapters
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,10 +17,9 @@ import com.example.medsyncpaciente.ConfirmarTomaActivity
 import com.example.medsyncpaciente.DetalleCumplimiento
 import com.example.medsyncpaciente.DetalleToma
 import com.example.medsyncpaciente.R
+import com.google.firebase.firestore.FirebaseFirestore
 
 class AdaptadorSintomas(private val context: Context) : RecyclerView.Adapter<AdaptadorSintomas.ViewHolder>() {
-
-    // hora,medicina,dosis
 
     private val sintomas = arrayOf("Dolor de cabeza", "Acidez Estomacal", "Secresion Nasal")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

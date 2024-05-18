@@ -19,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class AdaptadorMediciones(private val context: Context, private val sharedPreferences: SharedPreferences) : RecyclerView.Adapter<AdaptadorMediciones.ViewHolder>() {
 
+
     // Instancia de la base de datos
     private val db = FirebaseFirestore.getInstance()
 
