@@ -4,22 +4,22 @@
     <item
         android:id="@+id/menu_today"
         android:icon="@drawable/ic_checklist"
-        android:title="Today" />
+        android:title="Hoy" />
 
     <item
         android:id="@+id/menu_progress"
         android:icon="@drawable/ic_showchart"
-        android:title="Progress" />
+        android:title="Progreso" />
 
     <item
         android:id="@+id/menu_measurements"
         android:icon="@drawable/ic_measurement"
-        android:title="Measures" />
+        android:title="Mediciones" />
 
     <item
         android:id="@+id/menu_treatment"
         android:icon="@drawable/treatment_icon"
-        android:title="Treatment" />
+        android:title="Tratamientos" />
 
     <item
         android:id="@+id/menu_medicamentos"

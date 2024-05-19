@@ -112,28 +112,28 @@ class HomeActivity : AppCompatActivity() {
                 R.id.menu_today -> {
                     if (getCurrentFragment() !is TodayFragment) {
                         makeCurrentFragment(todayFragment)
-                        toolbarTitle.text = "Today"
+                        toolbarTitle.text = "Hoy"
                         Log.d("BottomNavigation", "Today Fragment Selected")
                     }
                 }
                 R.id.menu_progress -> {
                     if (getCurrentFragment() !is ProgressFragment) {
                         makeCurrentFragment(progressFragment)
-                        toolbarTitle.text = "Progress"
+                        toolbarTitle.text = "Progreso"
                         Log.d("BottomNavigation", "Progress Fragment Selected")
                     }
                 }
                 R.id.menu_treatment -> {
                     if (getCurrentFragment() !is TreatmentFragment) {
                         makeCurrentFragment(treatmentFragment)
-                        toolbarTitle.text = "Treatment"
+                        toolbarTitle.text = "Tratamientos"
                         Log.d("BottomNavigation", "Treatment Fragment Selected")
                     }
                 }
                 R.id.menu_measurements -> {
                     if (getCurrentFragment() !is MeasurementFragment) {
                         makeCurrentFragment(measurementsFragment)
-                        toolbarTitle.text = "Measurements"
+                        toolbarTitle.text = "Mediciones"
                         Log.d("BottomNavigation", "Measure Fragment Selected")
                     }
                 }
@@ -194,17 +194,17 @@ class HomeActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.menu_account -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
-                Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Ajustes", Toast.LENGTH_SHORT).show()
                 return true
             }
             R.id.menu_export -> {
                 startActivity(Intent(this, ExportActivity::class.java))
-                Toast.makeText(this, "Export", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Exportar", Toast.LENGTH_SHORT).show()
                 return true
             }
             R.id.menu_notification -> {
                 startActivity(Intent(this, NotificationsActivity::class.java))
-                Toast.makeText(this, "Notifications", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Notificaciones", Toast.LENGTH_SHORT).show()
                 return true
             }
             R.id.menu_citas -> {

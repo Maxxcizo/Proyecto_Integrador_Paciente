@@ -7,11 +7,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.medsyncpaciente.Adapters.AdaptadorMediciones
 import com.example.medsyncpaciente.GraficasMedicionesActivity
 import com.example.medsyncpaciente.R
+import com.example.medsyncpaciente.RegistroSintomasActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 // TODO: Rename parameter arguments, choose names that match
@@ -30,6 +32,8 @@ class MeasurementFragment : Fragment() {
     private var param2: String? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var botonFlotante: FloatingActionButton
+    private lateinit var registrarButton: Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +55,7 @@ class MeasurementFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.recyclerView_Mediciones)
         botonFlotante = view.findViewById<FloatingActionButton>(R.id.fab)
+        registrarButton = view.findViewById(R.id.registrarMediciones_btn)
         val adapter = AdaptadorMediciones(requireActivity(), sharedPreferences) // Usar requireActivity() para obtener el contexto de la actividad y ademas se mandan las shared Preferences
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
@@ -65,6 +70,10 @@ class MeasurementFragment : Fragment() {
             val intent = Intent(requireContext(), GraficasMedicionesActivity::class.java)
             // Iniciar la actividad
             startActivity(intent)
+        }
+
+        registrarButton.setOnClickListener {
+            startActivity(Intent(requireContext(), RegistroSintomasActivity::class.java))
         }
 
         return view

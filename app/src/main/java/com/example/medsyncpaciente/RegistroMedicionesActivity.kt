@@ -19,11 +19,17 @@ import com.example.medsyncpaciente.fragments.registromediciones.FrecuenciaFragme
 import com.example.medsyncpaciente.fragments.registromediciones.GlucosaFragment
 import com.example.medsyncpaciente.fragments.registromediciones.OxigenoFragment
 import com.example.medsyncpaciente.fragments.registromediciones.PresionFragment
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import kotlin.math.roundToInt
+
+// notas
+// Corregir que al agregar una medicion de  presion arterial, se agregue correctamente, ya que se agrega
+// un solo valor!
 
 class RegistroMedicionesActivity : AppCompatActivity() {
     private lateinit var presionFragment: PresionFragment
@@ -33,7 +39,6 @@ class RegistroMedicionesActivity : AppCompatActivity() {
     private lateinit var toolbar: Toolbar
     private lateinit var toolbarTitle: TextView
     private lateinit var backIcon: ImageView
-    private lateinit var registrarButton: Button
     private lateinit var posponerButton: Button
     private lateinit var confirmarButton: Button
     private lateinit var db: FirebaseFirestore
@@ -56,7 +61,6 @@ class RegistroMedicionesActivity : AppCompatActivity() {
         toolbar = findViewById(R.id.toolbar_registroMediciones)
         toolbarTitle = findViewById(R.id.toolbarsecundario_title)
         backIcon = findViewById(R.id.back_btn)
-        registrarButton = findViewById(R.id.registrarMediciones_btn)
         posponerButton = findViewById(R.id.posponer_btn)
         confirmarButton = findViewById(R.id.confirmar_btn)
 
@@ -92,10 +96,6 @@ class RegistroMedicionesActivity : AppCompatActivity() {
     private fun setup() {
         backIcon.setOnClickListener {
             onBackPressed()
-        }
-
-        registrarButton.setOnClickListener {
-            startActivity(Intent(this, RegistroSintomasActivity::class.java))
         }
 
         confirmarButton.setOnClickListener {
@@ -176,6 +176,7 @@ class RegistroMedicionesActivity : AppCompatActivity() {
                 Toast.makeText(this, "Fragmento no válido", Toast.LENGTH_SHORT).show()
             }
         }
+        // agregar otra pantalla para mostrar si el resultado esta dentro o fuera del promedio
     }
 
 
@@ -203,7 +204,6 @@ class RegistroMedicionesActivity : AppCompatActivity() {
         medicionesContent: List<String>,
         pacienteId: String?,
         estado: String?
-
     ) {
         println("tipo de medicion: $measurementType")
         val measurementRef = db.collection("Paciente").document(pacienteId!!)
@@ -215,11 +215,12 @@ class RegistroMedicionesActivity : AppCompatActivity() {
         val fechaHoraFormateada = formatoFechaHora.format(fechaActual)
 
         val nuevaMedicionData = when (measurementType) {
-            "PresionFragment" -> mapOf(
+            "Presion Arterial" -> mapOf(
                 "valor S" to medicionesContent[0],
                 "valor D" to medicionesContent[1],
                 "valor F" to medicionesContent[2],
-                "Fecha y Hora" to fechaHoraFormateada
+                "Fecha y Hora" to fechaHoraFormateada,
+                "estado" to estado
             )
             else -> mapOf(
                 "valor" to medicionesContent[0],
@@ -232,12 +233,36 @@ class RegistroMedicionesActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 Toast.makeText(this, "Nueva medición agregada correctamente", Toast.LENGTH_SHORT).show()
                 println("Nueva medición agregada correctamente")
+                // Después de agregar la nueva medición, obtener las últimas 5 mediciones
+                obtenerUltimas5Mediciones(measurementRef)
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Error al agregar nueva medición: $e", Toast.LENGTH_SHORT).show()
                 println("Nueva medición NO agregada correctamente")
             }
     }
+
+    private fun obtenerUltimas5Mediciones(measurementRef: CollectionReference) {
+        measurementRef.orderBy("Fecha y Hora", Query.Direction.DESCENDING)
+            .limit(5)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val estados = querySnapshot.documents.mapNotNull { it.getString("estado") }
+                println("El estado de las ultimas 5 mediciones> $estados")
+                if (estados.size == 5 && estados.all { it == "Fuera del Rango" }) {
+                    Toast.makeText(this, "Las últimas 5 mediciones están fuera de rango", Toast.LENGTH_LONG).show()
+                    println("Las últimas 5 mediciones están fuera de rango")
+                    // Agregar el funcionamiento para alertar al medico
+                } else {
+                    println("Las últimas mediciones no están fuera de rango")
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error al obtener mediciones: $e", Toast.LENGTH_SHORT).show()
+                println("Error al obtener mediciones: $e")
+            }
+    }
+
 
     private fun consultarMedicionesSemanaAnterior(medicionesContent: List<String>, medicionType: String, pacienteId: String?) {
 
@@ -301,53 +326,119 @@ class RegistroMedicionesActivity : AppCompatActivity() {
                 println("Mediciones D de la ultima semana: $medicionesSemanaValorD")
                 println("Mediciones F de la ultima semana: $medicionesSemanaValorF")
 
-                // Calcular la media de las mediciones de la última semana
                 var media = 0
-                if(medicionesSemana.isNotEmpty()){
-                    media = medicionesSemana.average().roundToInt()
+                var mediaS = 0
+                var mediaD = 0
+                var mediaF = 0
 
+                var mediasPresion = mutableListOf<Int>()
+                var estado = ""
 
-                    println("Promedio Mediciones de la ultima semana: $media")
+                when(medicionType){
+                    "Presion Arterial" -> {
+                        if (medicionesSemanaValorS.isNotEmpty() && medicionesSemanaValorD.isNotEmpty() && medicionesSemanaValorF.isNotEmpty()) {
+                            mediaS = medicionesSemanaValorS.average().roundToInt()
+                            println("Promedio Mediciones S de la ultima semana: $mediaS")
+                            mediaD = medicionesSemanaValorD.average().roundToInt()
+                            println("Promedio Mediciones D de la ultima semana: $mediaD")
+                            mediaF = medicionesSemanaValorF.average().roundToInt()
+                            println("Promedio Mediciones F de la ultima semana: $mediaF")
+                            mediasPresion.add(mediaS)
+                            mediasPresion.add(mediaD)
+                            mediasPresion.add(mediaF)
 
-                    // Comparar la nueva medición con la media
-                    for(medicion in medicionesContent){
-                        // Manejar diferentes tipos de medición
-                        when (medicionType) {
-                            "Presion arterial" -> {
-                                // Comparar con los valores específicos de presión arterial
-                                // Si es presión arterial, comparar los valores s, d y f/*
-                                /*if (/* comparación de los valores s, d y f */) {
-                                    Toast.makeText(this, "La medición de presión arterial está dentro de la media", Toast.LENGTH_SHORT).show()
-                                    println("Medicion dentro del rango: $medicion")
+                            // Asegurarse de que `medicionesContent` tiene al menos 3 mediciones
+                            if (medicionesContent.size >= 3) {
+                                var fueraDeRango = false
+
+                                for (i in 0..2) {
+                                    val medicion = medicionesContent[i].toInt()
+                                    val media = mediasPresion[i]
+
+                                    if (medicion in (media - rango)..(media + rango)) {
+                                        Toast.makeText(this, "La medición está dentro de la media", Toast.LENGTH_SHORT).show()
+                                        println("Medicion dentro del rango: $medicion. Media $media")
+                                    } else {
+                                        Toast.makeText(this, "La medición está fuera de la media", Toast.LENGTH_SHORT).show()
+                                        println("Medicion fuera del rango: $medicion. Media $media")
+                                        fueraDeRango = true
+                                    }
+                                }
+
+                                if (fueraDeRango) {
+                                    estado = "Fuera del Rango"
                                 } else {
-                                    Toast.makeText(this, "La medición de presión arterial está fuera de la media", Toast.LENGTH_SHORT).show()
-                                    println("Medicion fuera del rango: $medicion")
-                                }*/
+                                    estado = "Dentro del Rango"
+                                }
+
+                                addMeasurementToDatabase(
+                                    medicionType,
+                                    medicionesContent,
+                                    pacienteId,
+                                    estado
+                                )
                             }
-                            // Agregar más casos para otros tipos de medición si es necesario
-                            else -> {
+                        } else {
+                            estado = "Dentro del Rango"
+                            addMeasurementToDatabase(
+                                medicionType,
+                                medicionesContent,
+                                pacienteId,
+                                estado
+                            )
+                        }
+                    }
+                    else -> {
+                        if (medicionesSemana.isNotEmpty()) {
+                            for (medicion in medicionesContent) {
+                                // corregir eque no se compare
+                                media = medicionesSemana.average().roundToInt()
+                                println("Promedio Mediciones de la ultima semana: $media")
+
                                 // Tratamiento por defecto para otros tipos de medición
                                 if (medicion.toInt() in (media - rango)..(media + rango)) {
-                                    Toast.makeText(this, "La medición está dentro de la media", Toast.LENGTH_SHORT).show()
-                                    println("Medicion dentro del rango: $medicion")
+                                    Toast.makeText(
+                                        this,
+                                        "La medición está dentro de la media",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    println("Medicion dentro del rango: $medicion. Media $media")
                                     // Agregar las mediciones a la base de datos junto con el estado de la medicion
-                                    val estado = "Dentro del Rango"
-                                    addMeasurementToDatabase(medicionType, medicionesContent, pacienteId, estado)
+                                    estado = "Dentro del Rango"
+                                    addMeasurementToDatabase(
+                                        medicionType,
+                                        medicionesContent,
+                                        pacienteId,
+                                        estado
+                                    )
                                 } else {
-                                    Toast.makeText(this, "La medición está fuera de la media", Toast.LENGTH_SHORT).show()
-                                    println("Medicion fuera del rango: $medicion")
+                                    Toast.makeText(
+                                        this,
+                                        "La medición está fuera de la media",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    println("Medicion fuera del rango: $medicion. Media $media")
                                     // Agregar las mediciones a la base de datos junto con el estado de la medicion
-                                    val estado = "Fuera de Rango"
-                                    addMeasurementToDatabase(medicionType, medicionesContent, pacienteId, estado)
+                                    estado = "Fuera del Rango"
+                                    addMeasurementToDatabase(
+                                        medicionType,
+                                        medicionesContent,
+                                        pacienteId,
+                                        estado
+                                    )
                                 }
                             }
                         }
+                        else{
+                            estado = "Dentro del Rango"
+                            addMeasurementToDatabase(
+                                medicionType,
+                                medicionesContent,
+                                pacienteId,
+                                estado
+                            )
+                        }
                     }
-                }
-                else{
-                    // Agregar las mediciones a la base de datos junto con el estado de la medicion
-                    val estado = "Dentro de Rango"
-                    addMeasurementToDatabase(medicionType, medicionesContent, pacienteId, estado)
                 }
             }
             .addOnFailureListener { e ->

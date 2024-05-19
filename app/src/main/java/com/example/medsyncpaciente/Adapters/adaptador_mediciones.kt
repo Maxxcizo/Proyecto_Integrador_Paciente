@@ -3,22 +3,19 @@ package com.example.medsyncpaciente.Adapters
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.medsyncpaciente.R
 import com.example.medsyncpaciente.RegistroMedicionesActivity
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 
 class AdaptadorMediciones(private val context: Context, private val sharedPreferences: SharedPreferences) : RecyclerView.Adapter<AdaptadorMediciones.ViewHolder>() {
-
 
     // Instancia de la base de datos
     private val db = FirebaseFirestore.getInstance()
@@ -26,7 +23,7 @@ class AdaptadorMediciones(private val context: Context, private val sharedPrefer
     // Diccionario para encontrar las mediciones asignadas
     val diccionarioMediciones = listOf("Presion Arterial", "Glucosa en sangre", "Oxigenacion en Sangre", "Frecuencia Cardiaca")
 
-    // Variables para almacenas las mediciones asignadas y sus frecuencias
+    // Variables para almacenar las mediciones asignadas y sus frecuencias
     var medicionesAsignadas = mutableListOf<String>()
     var frecuenciaMedicionesAsignadas = mutableListOf<Int>()
 
@@ -57,38 +54,35 @@ class AdaptadorMediciones(private val context: Context, private val sharedPrefer
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         println("Mediciones asignadas: $medicionesConFrecuencia")
-
-        val claves = medicionesConFrecuencia.keys.toList()
-        val valores = medicionesConFrecuencia.values.toList()
 
         val med = medicionesAsignadas.getOrNull(position)
         val frec = frecuenciaMedicionesAsignadas.getOrNull(position)
-        if (claves != null) {
-            holder.mediciontext.text = claves[position]
-            holder.frecuenciatext.text = diccionarioFrecuencia.getOrDefault(valores[position], "")
+
+        if (med != null && frec != null) {
+            holder.mediciontext.text = med
+            holder.frecuenciatext.text = diccionarioFrecuencia.getOrDefault(frec, "")
             holder.horarioText.text = horario[position]
-            diccionarioImageReferences[claves[position]]?.let {
-                holder.iconoImage.setImageResource(
-                    it
-                )
+            diccionarioImageReferences[med]?.let {
+                holder.iconoImage.setImageResource(it)
             }
             holder.card.setOnClickListener {
                 val intent = Intent(context, RegistroMedicionesActivity::class.java).apply {
-                    putExtra("medicion", claves[position])
+                    putExtra("medicion", med)
                     println("Mediciones asignadas: $medicionesAsignadas")
-                    putExtra("frecuencia", diccionarioFrecuencia.getOrDefault(valores[position], ""))
-                    println("Frecuencia asignada: $valores")
+                    putExtra("frecuencia", diccionarioFrecuencia.getOrDefault(frec, ""))
+                    println("Frecuencia asignada: $frec")
                     putExtra("hora", horario[position])
                 }
                 context.startActivity(intent)
             }
+        } else {
+            Toast.makeText(context, "No hay suficiente información para la medición en la posición $position", Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun getItemCount(): Int {
-        return medicionesConFrecuencia.size
+        return medicionesAsignadas.size
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -120,37 +114,20 @@ class AdaptadorMediciones(private val context: Context, private val sharedPrefer
                                 frecuenciaMedicionesAsignadas.add(frecuencia.toInt())
                                 println("La frecuencia de $medicion es: $frecuencia")
 
-                            }
-                            else{
+                                medicionesConFrecuencia[medicion] = frecuencia.toInt()
+                            } else {
                                 println("El campo 'Frecuencia' no está presente en el documento: $medicion")
                             }
-                        }else{
+                        } else {
                             println("El documento no existe.")
                         }
-                    }else {
+                    } else {
                         println("Error al obtener el documento: ${task.exception}")
                     }
 
                     loadedMediciones++
                     // Verificar si todas las mediciones se han cargado
                     if (loadedMediciones == diccionarioMediciones.size) {
-                        // Llamar al callback una vez que todas las mediciones se han cargado
-
-                        // Iterar sobre las mediciones y sus frecuencias correspondientes
-                        for ((index, medicion) in diccionarioMediciones.withIndex()) {
-                            if (index < frecuenciaMedicionesAsignadas.size) {
-                                val frecuencia = frecuenciaMedicionesAsignadas[index]
-                                println("Medición: $medicion, Frecuencia: $frecuencia")
-                                if (frecuencia != 0) {
-                                    medicionesConFrecuencia[medicion] = frecuencia
-                                }
-                            } else {
-                                println("No hay suficientes frecuencias asignadas para la medición: $medicion")
-                                // Manejar la situación donde no hay suficientes frecuencias asignadas según sea necesario
-                            }
-                        }
-
-
                         callback()
                     }
                 }
