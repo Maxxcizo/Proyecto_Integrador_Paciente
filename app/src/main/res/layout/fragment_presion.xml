@@ -208,7 +208,7 @@
                     android:gravity="start" />
 
                 <TextView
-                    android:id="@+id/fecha_tv"
+                    android:id="@+id/hora_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

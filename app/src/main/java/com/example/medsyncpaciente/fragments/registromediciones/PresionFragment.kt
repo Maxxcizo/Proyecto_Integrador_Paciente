@@ -6,7 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.TextView
+import com.example.medsyncpaciente.MeassurementFragment
 import com.example.medsyncpaciente.R
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.List
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -18,13 +23,14 @@ private const val ARG_PARAM2 = "param2"
  * Use the [PresionFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class PresionFragment : Fragment() {
+class PresionFragment : Fragment(), MeassurementFragment {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var valorPresionSistolica: EditText
     private lateinit var valorPresionDiastolica: EditText
     private lateinit var valorRitmoCardiaco: EditText
+    private lateinit var hora: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,12 +50,25 @@ class PresionFragment : Fragment() {
         valorPresionSistolica = view.findViewById<EditText>(R.id.presionSistolica_et)
         valorPresionDiastolica = view.findViewById<EditText>(R.id.presionDiastolica_et)
         valorRitmoCardiaco = view.findViewById<EditText>(R.id.ritmoCardiaco_et)
+        hora = view.findViewById<TextView>(R.id.hora_tv)
+
+        // Obtener la hora actual y formatearla
+        val horaActual = obtenerHoraActual()
+        hora.text = horaActual
 
         return view
     }
 
-    fun getMedicionesContent(): Array<String> {
-        return arrayOf(valorPresionSistolica.text.toString(), valorPresionDiastolica.text.toString(),valorRitmoCardiaco.text.toString())
+    // Función para obtener la hora actual en el formato deseado
+    private fun obtenerHoraActual(): String {
+        val formatoHora = SimpleDateFormat("hh:mm a") // Formato de hora (por ejemplo: 11:00 a.m.)
+        val fechaActual = Date()
+        return formatoHora.format(fechaActual)
+    }
+
+    // Método para obtener las mediciones de la presión arterial
+    override fun getMedicionesContent(): kotlin.collections.List<String> {
+        return listOf(valorPresionSistolica.text.toString(), valorPresionDiastolica.text.toString(),valorRitmoCardiaco.text.toString())
     }
 
     companion object {
