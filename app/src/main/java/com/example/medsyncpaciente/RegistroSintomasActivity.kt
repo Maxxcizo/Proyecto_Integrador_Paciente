@@ -56,7 +56,7 @@ class RegistroSintomasActivity : AppCompatActivity() {
         toolbarTitle.text = "Registro de Síntomas"
         setSupportActionBar(toolbar)
 
-        adapter.cargarMediciones {
+        adapter.cargarSintomas {
             // Todas las mediciones se han cargado, iniciar la siguiente actividad
             // Aquí puedes llamar al método para configurar el RecyclerView
             recyclerView.adapter = adapter

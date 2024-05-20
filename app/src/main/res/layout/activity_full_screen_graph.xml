@@ -1,0 +1,15 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbar_fullScreenGraph"
+        layout="@layout/toolbarsecundario" />
+
+    <!-- Contenedor de la gráfica en pantalla completa -->
+    <FrameLayout
+        android:id="@+id/fullScreenContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>

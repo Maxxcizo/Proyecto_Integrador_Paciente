@@ -18,6 +18,7 @@ junitKtx = "1.1.5"
 mockitoCore = "3.11.2"
 mockk = "1.12.0"
 mockitoKotlin = "3.2.0"
+mpandroidchart = "v3.1.0"
 robolectric = "4.4"
 
 [libraries]
@@ -39,6 +40,7 @@ androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
+mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 
 [plugins]
