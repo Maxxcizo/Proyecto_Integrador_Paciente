@@ -72,12 +72,12 @@ class AdaptadorGraficasMediciones(private val context: Context) : RecyclerView.A
             for (i in medicion.fechaHora.indices) {
                 entriesPromedioGeneral.add(Entry(i.toFloat(), promedioGeneral))
             }
-            val lineDataSetPromedioGeneral = LineDataSet(entriesPromedioGeneral, "Promedio General")
-            lineDataSetPromedioGeneral.color = Color.BLACK
+            val lineDataSetPromedioGeneral = LineDataSet(entriesPromedioGeneral, "Promedio")
+            lineDataSetPromedioGeneral.color = Color.MAGENTA
             lineDataSetPromedioGeneral.setDrawCircles(false)
             lineDataSetPromedioGeneral.valueFormatter = object : ValueFormatter() {
                 override fun getFormattedValue(value: Float): String {
-                    return ""
+                    return "${value.roundToInt()} ${medicion.unidadMedida}"
                 }
             }
 
@@ -109,7 +109,7 @@ class AdaptadorGraficasMediciones(private val context: Context) : RecyclerView.A
             lineDataSetLow.setDrawCircles(false)
             lineDataSetLow.valueFormatter = object : ValueFormatter() {
                 override fun getFormattedValue(value: Float): String {
-                    return ""
+                    return "${value.roundToInt()} ${medicion.unidadMedida}"
                 }
             }
             val lineDataSetHigh = LineDataSet(entriesNormalHigh, "Rango Alto")
@@ -117,7 +117,7 @@ class AdaptadorGraficasMediciones(private val context: Context) : RecyclerView.A
             lineDataSetHigh.setDrawCircles(false)
             lineDataSetHigh.valueFormatter = object : ValueFormatter() {
                 override fun getFormattedValue(value: Float): String {
-                    return ""
+                    return "${value.roundToInt()} ${medicion.unidadMedida}"
                 }
             }
 
@@ -140,7 +140,7 @@ class AdaptadorGraficasMediciones(private val context: Context) : RecyclerView.A
             chart.data = combinedData
 
             // Configurar marcadores
-            val dateFormatter = SimpleDateFormat("MM/dd/yy", Locale.getDefault())
+            val dateFormatter = SimpleDateFormat("MM/dd", Locale.getDefault())
             val xAxisLabels = medicion.fechaHora.map { dateFormatter.format(it) }
             val customMarkerView = CustomMarkerView(context, R.layout.marker_view, xAxisLabels)
             chart.marker = customMarkerView

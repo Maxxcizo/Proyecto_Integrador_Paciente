@@ -99,9 +99,11 @@ class GraficasMedicionesActivity : AppCompatActivity() {
 
                     if (fechas.isNotEmpty() && valores.isNotEmpty()) {
                         val promediosDiarios = calcularPromediosDiarios(fechas, valores)
+                        val fechasPromedios = promediosDiarios.keys.toList()
+                        val valoresPromedios = promediosDiarios.values.toList()
                         val unidadMedida = obtenerUnidadDeMedida(med)
                         val rangoNormal = obtenerRangoNormal(med)
-                        val medicion = AdaptadorGraficasMediciones.Medicion(med, fechas, valores, unidadMedida, rangoNormal)
+                        val medicion = AdaptadorGraficasMediciones.Medicion(med, fechasPromedios, valoresPromedios, unidadMedida, rangoNormal)
                         adapter.addMedicion(medicion) // Agregar medición al adaptador
                     }
                 }
@@ -115,10 +117,9 @@ class GraficasMedicionesActivity : AppCompatActivity() {
         }
     }
 
-
     private fun calcularPromediosDiarios(fechas: List<Date>, valores: List<Float>): Map<Date, Float> {
         val mapaMediciones = mutableMapOf<String, MutableList<Float>>()
-        val formatoFechaOutput = SimpleDateFormat("MM/dd/yy", Locale.getDefault())
+        val formatoFechaOutput = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
         for (i in fechas.indices) {
             val fechaFormateada = formatoFechaOutput.format(fechas[i])
@@ -131,7 +132,7 @@ class GraficasMedicionesActivity : AppCompatActivity() {
         val promediosDiarios = mutableMapOf<Date, Float>()
         for ((fecha, valoresDelDia) in mapaMediciones) {
             val promedio = valoresDelDia.average().toFloat()
-            promediosDiarios[SimpleDateFormat("MM/dd/yy").parse(fecha)] = promedio
+            promediosDiarios[SimpleDateFormat("yyyy-MM-dd").parse(fecha)] = promedio
         }
 
         return promediosDiarios
@@ -152,7 +153,7 @@ class GraficasMedicionesActivity : AppCompatActivity() {
             "Frecuencia Cardiaca" -> 60f to 100f
             "Glucosa en sangre" -> 70f to 140f
             "Presion Arterial" -> 90f to 120f
-            "Oxigenacion en Sangre" -> 95f to 100f
+            "Oxigenacion en Sangre" -> 90f to 100f
             else -> 0f to 0f
         }
     }
