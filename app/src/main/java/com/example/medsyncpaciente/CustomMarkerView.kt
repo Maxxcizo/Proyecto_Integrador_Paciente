@@ -7,6 +7,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.utils.MPPointF
 import com.example.medsyncpaciente.R
+import kotlin.math.roundToInt
 
 class CustomMarkerView(context: Context, layoutResource: Int, private val xAxisLabels: List<String>) :
     MarkerView(context, layoutResource) {
@@ -18,7 +19,7 @@ class CustomMarkerView(context: Context, layoutResource: Int, private val xAxisL
         e?.let {
             val index = e.x.toInt()
             val date = if (index >= 0 && index < xAxisLabels.size) xAxisLabels[index] else ""
-            val value = e.y.toString()
+            val value = e.y.roundToInt().toString()
             tvDate.text = "Fecha: $date"
             tvValue.text = "Valor: $value"
         }

@@ -17,13 +17,23 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.math.roundToInt
 
 class AdaptadorGraficasMediciones(private val context: Context) : RecyclerView.Adapter<AdaptadorGraficasMediciones.ViewHolder>() {
 
     private var mediciones: MutableList<Medicion> = mutableListOf()
 
-    data class Medicion(val titulo: String, val fechaHora: List<Date>, val valor: List<Float>, val unidadMedida: String, val rangoNormal: Pair<Float, Float>)
+    data class Medicion(
+        val titulo: String,
+        val fechaHora: List<Date>,
+        val valorS: List<Float> = listOf(),
+        val valorD: List<Float> = listOf(),
+        val valorF: List<Float> = listOf(),
+        val eventosAnomalosS: List<Entry>,
+        val eventosAnomalosD: List<Entry>,
+        val eventosAnomalosF: List<Entry>,
+        val unidadMedida: String,
+        val rangoNormal: Pair<Float, Float>
+    )
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.rv_graficas_mediciones, parent, false)
@@ -32,9 +42,7 @@ class AdaptadorGraficasMediciones(private val context: Context) : RecyclerView.A
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val medicion = mediciones[position]
-
         holder.tituloGraficaMedicion.text = medicion.titulo
-
         holder.setupLineChart(medicion)
     }
 
@@ -46,60 +54,96 @@ class AdaptadorGraficasMediciones(private val context: Context) : RecyclerView.A
         var tituloGraficaMedicion: TextView = itemView.findViewById(R.id.tituloGraficaMedicion)
         var chart: LineChart = itemView.findViewById(R.id.chart)
 
-
         fun setupLineChart(medicion: Medicion) {
-
-            println("Medicion $medicion")
-
-            val entries = ArrayList<Entry>()
+            val entriesS = ArrayList<Entry>()
+            val entriesD = ArrayList<Entry>()
+            val entriesF = ArrayList<Entry>()
+            val entriesAnomalosS = ArrayList<Entry>()
+            val entriesAnomalosD = ArrayList<Entry>()
+            val entriesAnomalosF = ArrayList<Entry>()
 
             for (i in medicion.fechaHora.indices) {
-                entries.add(Entry(i.toFloat(), medicion.valor[i]))
-            }
-
-            val lineDataSet = LineDataSet(entries, "Medición")
-            lineDataSet.color = Color.BLUE
-            lineDataSet.setCircleColor(Color.BLUE)
-            lineDataSet.valueFormatter = object : ValueFormatter() {
-                override fun getFormattedValue(value: Float): String {
-                    return "${value.roundToInt()} ${medicion.unidadMedida}"
+                entriesS.add(Entry(i.toFloat(), medicion.valorS[i]))
+                println("Medición normal sistólica ${medicion.valorS[i]}")
+                if (medicion.valorD.isNotEmpty()) {
+                    entriesD.add(Entry(i.toFloat(), medicion.valorD[i]))
+                    println("Medición normal diastólica ${medicion.valorD[i]}")
+                }
+                if (medicion.valorF.isNotEmpty()) {
+                    entriesF.add(Entry(i.toFloat(), medicion.valorF[i]))
+                    println("Medición normal frecuencia ${medicion.valorF[i]}")
                 }
             }
 
-            // Calcular el promedio general
-            val promedioGeneral = medicion.valor.average().toFloat()
-            val entriesPromedioGeneral = ArrayList<Entry>()
-            for (i in medicion.fechaHora.indices) {
-                entriesPromedioGeneral.add(Entry(i.toFloat(), promedioGeneral))
-            }
-            val lineDataSetPromedioGeneral = LineDataSet(entriesPromedioGeneral, "Promedio")
-            lineDataSetPromedioGeneral.color = Color.MAGENTA
-            lineDataSetPromedioGeneral.setDrawCircles(false)
-            lineDataSetPromedioGeneral.valueFormatter = object : ValueFormatter() {
-                override fun getFormattedValue(value: Float): String {
-                    return "${value.roundToInt()} ${medicion.unidadMedida}"
+            var lineDataSetS = LineDataSet(entriesS, "")
+            when(medicion.titulo) {
+                "Presion Arterial" -> {
+                    lineDataSetS = LineDataSet(entriesS, "Sistólica")
+                }
+                else -> {
+                    lineDataSetS = LineDataSet(entriesS, "Medición")
                 }
             }
 
-            // Calcular el promedio semanal
+            val lineDataSetD = LineDataSet(entriesD, "Diastólica")
+            val lineDataSetF = LineDataSet(entriesF, "Frecuencia Cardíaca")
+            val lineDataSetAnomS = LineDataSet(medicion.eventosAnomalosS, "Anomalías")
+            val lineDataSetAnomD = LineDataSet(medicion.eventosAnomalosD, "Anomalías")
+            val lineDataSetAnomF = LineDataSet(medicion.eventosAnomalosF, "Anomalías")
+
+            lineDataSetS.color = Color.BLUE
+            lineDataSetS.setCircleColor(Color.BLUE)
+            lineDataSetD.color = Color.BLUE
+            lineDataSetD.setCircleColor(Color.BLUE)
+            lineDataSetF.color = Color.BLACK
+            lineDataSetF.setCircleColor(Color.BLACK)
+
+            lineDataSetAnomS.color = Color.CYAN
+            lineDataSetAnomS.setCircleColor(Color.CYAN)
+
+            lineDataSetAnomD.color = Color.CYAN
+            lineDataSetAnomD.setCircleColor(Color.CYAN)
+
+            lineDataSetAnomF.color = Color.CYAN
+            lineDataSetAnomF.setCircleColor(Color.CYAN)
+
+            val lineDataSetPromedioGeneral: LineDataSet? = if (medicion.titulo != "Presion Arterial") {
+                val promedioGeneral = medicion.valorS.average().toFloat()
+                val entriesPromedioGeneral = ArrayList<Entry>()
+                for (i in medicion.fechaHora.indices) {
+                    entriesPromedioGeneral.add(Entry(i.toFloat(), promedioGeneral))
+                }
+                val dataSet = LineDataSet(entriesPromedioGeneral, "Promedio")
+                dataSet.color = Color.MAGENTA
+                dataSet.setDrawCircles(false)
+                dataSet.valueFormatter = object : ValueFormatter() {
+                    override fun getFormattedValue(value: Float): String {
+                        return "${value.toInt()} ${medicion.unidadMedida}"
+                    }
+                }
+                dataSet
+            } else {
+                null
+            }
+
             val entriesPromedioSemanal = ArrayList<Entry>()
             val calendar = Calendar.getInstance()
             var sum = 0f
             var count = 0
             for (i in medicion.fechaHora.indices) {
-                val value = medicion.valor[i]
+                val value = medicion.valorS[i]
                 sum += value
                 count++
                 if (calendar.get(Calendar.DAY_OF_WEEK) == calendar.firstDayOfWeek || i == medicion.fechaHora.size - 1) {
                     val promedioSemanal = if (count != 0) sum / count else 0f
-                    entriesPromedioSemanal.add(Entry(i.toFloat(), promedioSemanal))
+                    entriesPromedioSemanal.add(Entry(i.toFloat(), promedioSemanal
+                    ))
                     sum = 0f
                     count = 0
                 }
                 calendar.add(Calendar.DAY_OF_YEAR, 1)
             }
 
-            // Rango normal
             val normalLow = medicion.rangoNormal.first
             val normalHigh = medicion.rangoNormal.second
             val entriesNormalLow = medicion.fechaHora.indices.map { Entry(it.toFloat(), normalLow) }
@@ -109,7 +153,7 @@ class AdaptadorGraficasMediciones(private val context: Context) : RecyclerView.A
             lineDataSetLow.setDrawCircles(false)
             lineDataSetLow.valueFormatter = object : ValueFormatter() {
                 override fun getFormattedValue(value: Float): String {
-                    return "${value.roundToInt()} ${medicion.unidadMedida}"
+                    return "${value.toInt()} ${medicion.unidadMedida}"
                 }
             }
             val lineDataSetHigh = LineDataSet(entriesNormalHigh, "Rango Alto")
@@ -117,29 +161,41 @@ class AdaptadorGraficasMediciones(private val context: Context) : RecyclerView.A
             lineDataSetHigh.setDrawCircles(false)
             lineDataSetHigh.valueFormatter = object : ValueFormatter() {
                 override fun getFormattedValue(value: Float): String {
-                    return "${value.roundToInt()} ${medicion.unidadMedida}"
+                    return "${value.toInt()} ${medicion.unidadMedida}"
                 }
             }
 
-            // Agregar las anomalías
-            val anomalías = ArrayList<Entry>()
-            for (i in medicion.valor.indices) {
-                val valor = medicion.valor[i]
-                if (valor < normalLow || valor > normalHigh) {
-                    anomalías.add(Entry(i.toFloat(), valor))
+            val combinedData = if (medicion.valorD.isNotEmpty() && medicion.valorF.isNotEmpty()) {
+                if (lineDataSetPromedioGeneral != null) {
+                    LineData(
+                        lineDataSetS, lineDataSetD, lineDataSetF, lineDataSetLow,
+                        lineDataSetHigh, lineDataSetAnomS, lineDataSetAnomD, lineDataSetAnomF, lineDataSetPromedioGeneral
+                    )
+                } else {
+                    LineData(
+                        lineDataSetS, lineDataSetD, lineDataSetF, lineDataSetLow,
+                        lineDataSetHigh, lineDataSetAnomS, lineDataSetAnomD, lineDataSetAnomF
+                    )
+                }
+            } else {
+                if (lineDataSetPromedioGeneral != null) {
+                    LineData(
+                        lineDataSetS, lineDataSetLow, lineDataSetHigh,
+                        lineDataSetAnomS, lineDataSetAnomD, lineDataSetAnomF, lineDataSetPromedioGeneral
+                    )
+                } else {
+                    LineData(
+                        lineDataSetS, lineDataSetLow, lineDataSetHigh,
+                        lineDataSetAnomS, lineDataSetAnomD, lineDataSetAnomF
+                    )
                 }
             }
-            val lineDataSetAnom = LineDataSet(anomalías, "Anomalías")
-            lineDataSetAnom.color = Color.YELLOW
-            lineDataSetAnom.setDrawCircles(true)
-            lineDataSetAnom.circleRadius = 5f
-            lineDataSetAnom.setDrawCircleHole(true)
 
-            val combinedData = LineData(lineDataSet, lineDataSetLow, lineDataSetHigh, lineDataSetAnom, lineDataSetPromedioGeneral)
+            println("Combined data: $combinedData")
+            println("Anomalias data: $lineDataSetAnomS")
 
             chart.data = combinedData
 
-            // Configurar marcadores
             val dateFormatter = SimpleDateFormat("MM/dd", Locale.getDefault())
             val xAxisLabels = medicion.fechaHora.map { dateFormatter.format(it) }
             val customMarkerView = CustomMarkerView(context, R.layout.marker_view, xAxisLabels)
@@ -166,6 +222,7 @@ class AdaptadorGraficasMediciones(private val context: Context) : RecyclerView.A
 
     fun addMedicion(medicion: Medicion) {
         mediciones.add(medicion)
+        mediciones.sortBy { it.titulo }
         notifyDataSetChanged()
     }
 }
