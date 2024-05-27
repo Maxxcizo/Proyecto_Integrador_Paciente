@@ -1,5 +1,6 @@
 package com.example.medsyncpaciente.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.medsyncpaciente.Adapters.AdaptadorMedicamentos
+import com.example.medsyncpaciente.Adapters.AdaptadorMediciones
 import com.example.medsyncpaciente.Adapters.AdaptadorTratamientos
 import com.example.medsyncpaciente.R
 
@@ -43,12 +45,27 @@ class MedicamentosFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_medicamentos, container, false)
+
+        // se obtiene la instancia de los sharedPreferences
+        val sharedPreferences = requireContext().getSharedPreferences(
+            getString(R.string.prefs_file),
+            Context.MODE_PRIVATE
+        )
+
         recyclerView = view.findViewById(R.id.recyclerView_Medicamentos)
-        val adapter = AdaptadorMedicamentos(requireActivity()) // Usar requireActivity() para obtener el contexto de la actividad
+        val adapter = AdaptadorMedicamentos(
+            requireActivity(),
+            sharedPreferences
+        ) // Usar requireActivity() para obtener el contexto de la actividad y ademas se mandan las shared Preferences
         recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = adapter
+
+        adapter.cargarMedicamentos {
+            recyclerView.adapter = adapter
+        }
         return view
     }
+
+
 
     companion object {
         /**

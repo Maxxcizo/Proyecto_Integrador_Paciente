@@ -1,5 +1,6 @@
 package com.example.medsyncpaciente.fragments
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.medsyncpaciente.Adapters.AdaptadorCumplimiento
+import com.example.medsyncpaciente.Adapters.AdaptadorMediciones
 import com.example.medsyncpaciente.Adapters.AdaptadorTratamientos
 import com.example.medsyncpaciente.R
 
@@ -41,10 +43,21 @@ class ProgressFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_progress, container, false)
+
+        // se obtiene la instancia de los sharedPreferences
+        val sharedPreferences = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+
         recyclerView = view.findViewById(R.id.recyclerView_Cumplimiento)
-        val adapter = AdaptadorCumplimiento(requireActivity()) // Usar requireActivity() para obtener el contexto de la actividad
+        val adapter = AdaptadorCumplimiento(requireActivity(), sharedPreferences)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
+
+        adapter.cargarMedicamentos {
+            // Todas las mediciones se han cargado, iniciar la siguiente actividad
+            // Aquí puedes llamar al método para configurar el RecyclerView
+            recyclerView.adapter = adapter
+        }
+
         return view
     }
 
