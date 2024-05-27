@@ -47,6 +47,7 @@ dependencies {
     implementation (libs.androidx.constraintlayout)
     implementation(libs.androidx.core.ktx)
     implementation(libs.core.ktx)
+    implementation(libs.mpandroidchart)
 
 
     testImplementation (libs.mockito.core)

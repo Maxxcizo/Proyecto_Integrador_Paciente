@@ -1,8 +1,8 @@
 package com.example.medsyncpaciente
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -14,7 +14,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import com.example.medsyncpaciente.fragments.MeasurementFragment
+import com.example.medsyncpaciente.Adapters.AdaptadorGraficasMediciones
 import com.example.medsyncpaciente.fragments.registromediciones.FrecuenciaFragment
 import com.example.medsyncpaciente.fragments.registromediciones.GlucosaFragment
 import com.example.medsyncpaciente.fragments.registromediciones.OxigenoFragment
@@ -25,7 +25,10 @@ import com.google.firebase.firestore.Query
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
+import kotlin.math.pow
 import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 // notas
 // Corregir que al agregar una medicion de  presion arterial, se agregue correctamente, ya que se agrega
@@ -176,7 +179,6 @@ class RegistroMedicionesActivity : AppCompatActivity() {
                 Toast.makeText(this, "Fragmento no válido", Toast.LENGTH_SHORT).show()
             }
         }
-        // agregar otra pantalla para mostrar si el resultado esta dentro o fuera del promedio
     }
 
 
@@ -391,7 +393,7 @@ class RegistroMedicionesActivity : AppCompatActivity() {
                     else -> {
                         if (medicionesSemana.isNotEmpty()) {
                             for (medicion in medicionesContent) {
-                                // corregir eque no se compare
+                                // corregir que no se compare
                                 media = medicionesSemana.average().roundToInt()
                                 println("Promedio Mediciones de la ultima semana: $media")
 
@@ -427,6 +429,9 @@ class RegistroMedicionesActivity : AppCompatActivity() {
                                         estado
                                     )
                                 }
+
+                                // Aqui empieza el proceso de identificacion de eventos anomalos
+                                fetchDataFromFirestore(medicionType)
                             }
                         }
                         else{
@@ -447,8 +452,174 @@ class RegistroMedicionesActivity : AppCompatActivity() {
             }
     }
 
+    private fun fetchDataFromFirestore(medicionType: String) {
+        val db = FirebaseFirestore.getInstance()
+        val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+        val pacienteId = prefs.getString("pacienteId", null)
+
+        val medicionesRef = db.collection("Paciente").document(pacienteId!!).collection("Mediciones").document(medicionType)
+
+        medicionesRef.get()
+            .addOnSuccessListener { document ->
+                val documentId = document.id
+
+                fetchMediciones(documentId, pacienteId)
+                println("Docuemnt id: $documentId")
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(
+                    this,
+                    "Error al consultar mediciones: $exception",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+    }
+
+    private fun fetchMediciones(medicion: String, pacienteId: String) {
+        val db = FirebaseFirestore.getInstance()
+
+        val calendar = Calendar.getInstance()
+        calendar.time = Date()
+        calendar.add(Calendar.DAY_OF_YEAR, -7)
+        val fechaHaceUnaSemana = calendar.time
+        val formatoFechaHora = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+
+        val fechaHaceUnaSemanaString = formatoFechaHora.format(fechaHaceUnaSemana)
+
+        val medicionFechaRef = db.collection("Paciente").document(pacienteId)
+            .collection("Mediciones").document(medicion)
+            .collection("Registro de Medicion")
+            .whereGreaterThan("Fecha y Hora", fechaHaceUnaSemanaString)
+
+        medicionFechaRef.get().addOnSuccessListener { querySnapshot ->
+
+            // Variables para almacenar los datos
+            val valoresS = mutableListOf<Float>()
+            val valoresD = mutableListOf<Float>()
+            val valoresF = mutableListOf<Float>()
+            val documentIds = mutableListOf<String>()
+
+            // Recorrer los documentos (Mediciones) obtenidos
+            for (document in querySnapshot) {
+                documentIds.add(document.id)
+                when (medicion) {
+                    "Presion Arterial" -> {
+                        valoresS.add(document.getString("valor S")?.toFloat() ?: 0f)
+                        valoresD.add(document.getString("valor D")?.toFloat() ?: 0f)
+                        valoresF.add(document.getString("valor F")?.toFloat() ?: 0f)
+                    }
+                    else -> {
+                        valoresS.add(document.getString("valor")?.toFloat() ?: 0f)
+                    }
+                }
+            }
+
+            val medicionRef = db.collection("Paciente").document(pacienteId)
+                .collection("Mediciones").document(medicion)
+                .collection("Registro de Medicion")
+
+            // Calcular la media y la desviacion estandar de las mediciones diarias registradas de cada medicion
+            val mediaS = calcularMedia(valoresS)
+            val desviacionEstandarS = calcularDesviacionEstandar(valoresS, mediaS)
+            val umbral = 2.0f // Puedes ajustar este valor según sea necesario
+
+            val indicesEventosAnomalosS = identificarEventosAnomalos(valoresS, mediaS, desviacionEstandarS, umbral)
+
+            // Imprimir resultados
+            println("Media S: $mediaS")
+            println("Desviación Estándar S: $desviacionEstandarS")
+            println("Eventos Anómalos S: $indicesEventosAnomalosS")
+
+            // Actualizar documentos con eventos anómalos
+            indicesEventosAnomalosS.forEach { index ->
+                val idx = index.toInt()
+                if (idx in documentIds.indices) {
+                    val documentId = documentIds[idx]
+                    medicionRef.document(documentId).update("Evento Anomalo", true)
+                } else {
+                    // Handle the error: log it, throw an exception, or take other appropriate actions
+                    Log.e("UpdateError", "Index $idx out of bounds for documentIds list of size ${documentIds.size}")
+                }
+            }
+
+            // Realizar lo mismo para D y F si es "Presion Arterial"
+            if (medicion == "Presion Arterial") {
+                val mediaD = calcularMedia(valoresD)
+                val desviacionEstandarD = calcularDesviacionEstandar(valoresD, mediaD)
+                val indicesEventosAnomalosD = identificarEventosAnomalos(valoresD, mediaD, desviacionEstandarD, umbral)
+
+                val mediaF = calcularMedia(valoresF)
+                val desviacionEstandarF = calcularDesviacionEstandar(valoresF, mediaF)
+                val indicesEventosAnomalosF = identificarEventosAnomalos(valoresF, mediaF, desviacionEstandarF, umbral)
+
+                println("Media D: $mediaD")
+                println("Desviación Estándar D: $desviacionEstandarD")
+                println("Eventos Anómalos D: $indicesEventosAnomalosD")
+
+                println("Media F: $mediaF")
+                println("Desviación Estándar F: $desviacionEstandarF")
+                println("Eventos Anómalos F: $indicesEventosAnomalosF")
+
+                // Actualizar documentos con eventos anómalos para D
+                indicesEventosAnomalosD.forEach { index ->
+                    val documentId = documentIds[index.toInt()]
+                    medicionRef.document(documentId).update("Evento Anomalo", true)
+                }
+
+                // Actualizar documentos con eventos anómalos para F
+                indicesEventosAnomalosF.forEach { index ->
+                    val documentId = documentIds[index.toInt()]
+                    medicionRef.document(documentId).update("Evento Anomalo", true)
+                }
+            }
+        }.addOnFailureListener { e ->
+            println("Error al obtener las mediciones: $e")
+        }
+    }
+
+    // Función para calcular la media
+    fun calcularMedia(valores: List<Float>): Float {
+        return valores.sum() / valores.size
+    }
+
+    // Función para calcular la desviación estándar
+    fun calcularDesviacionEstandar(valores: List<Float>, media: Float): Float {
+        val sumatoria = valores.fold(0f) { acc, valor -> acc + (valor - media).pow(2) }
+        return sqrt(sumatoria / valores.size)
+    }
+
+    // Función para identificar eventos anómalos
+    fun identificarEventosAnomalos(valores: List<Float>, media: Float, desviacionEstandar: Float, umbral: Float): List<Int> {
+        return valores.mapIndexedNotNull { index, valor ->
+            if (valor > media + umbral * desviacionEstandar || valor < media - umbral * desviacionEstandar) {
+                index
+            } else {
+                null
+            }
+        }
+    }
 
     private fun cancelar() {
         Toast.makeText(this, "Rechazaste.", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun obtenerUnidadDeMedida(medicion: String): String {
+        return when (medicion) {
+            "Frecuencia Cardiaca" -> "lpm"
+            "Glucosa en sangre" -> "mg/dl"
+            "Presion Arterial" -> "mm / hg"
+            "Oxigenacion en Sangre" -> "%"
+            else -> ""
+        }
+    }
+
+    private fun obtenerRangoNormal(medicion: String): Pair<Float, Float> {
+        return when (medicion) {
+            "Frecuencia Cardiaca" -> 60f to 100f
+            "Glucosa en sangre" -> 70f to 140f
+            "Presion Arterial" -> 85f to 135f
+            "Oxigenacion en Sangre" -> 90f to 100f
+            else -> 0f to 0f
+        }
     }
 }

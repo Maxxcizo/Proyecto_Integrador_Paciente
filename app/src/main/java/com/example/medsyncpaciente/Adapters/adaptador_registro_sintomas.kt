@@ -62,7 +62,7 @@ class AdaptadorRegistroSintomas(private val context: Context, private val shared
         }
     }
 
-    fun cargarMediciones(callback: () -> Unit) {
+    fun cargarSintomas(callback: () -> Unit) {
         val pacienteId = sharedPreferences.getString("pacienteId", null)
 
         if (pacienteId == null) {
