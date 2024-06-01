@@ -1,5 +1,6 @@
 package com.example.medsyncpaciente.fragments
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -41,10 +42,18 @@ class TreatmentFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_treatment, container, false)
+
+        val sharedPreferences = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
         recyclerView = view.findViewById(R.id.recyclerView_Treatment)
-        val adapter = AdaptadorTratamientos(requireActivity()) // Usar requireActivity() para obtener el contexto de la actividad
+        val adapter = AdaptadorTratamientos(requireActivity(), sharedPreferences) // Usar requireActivity() para obtener el contexto de la actividad
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
+
+        adapter.cargarTratamientos {
+            // Una vez cargados los medicamentos, establecer el adaptador
+            recyclerView.adapter = adapter
+        }
+
         return view
     }
 

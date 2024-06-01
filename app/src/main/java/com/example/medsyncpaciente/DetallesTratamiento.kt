@@ -11,11 +11,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.medsyncpaciente.Adapters.AdaptadorCumplimientoFecha
-import com.example.medsyncpaciente.Adapters.AdaptadorMedicamentos
-import com.example.medsyncpaciente.Adapters.AdaptadorMedicamentosLista
-import com.example.medsyncpaciente.Adapters.AdaptadorMediciones
-import com.example.medsyncpaciente.Adapters.AdaptadorMedicionesLista
 import com.example.medsyncpaciente.Adapters.AdaptadorSintomas
 
 class DetallesTratamiento : AppCompatActivity() {
@@ -24,8 +19,11 @@ class DetallesTratamiento : AppCompatActivity() {
     private lateinit var toolbarTitle: TextView
     private lateinit var backIcon: ImageView
     private lateinit var recyclerSintomas: RecyclerView
-    private lateinit var recyclerMediciones: RecyclerView
-    private lateinit var recyclerMedicamentos: RecyclerView
+    private lateinit var medicoTratamiento: TextView
+    private lateinit var diagnosticoTratamiento: TextView
+    private lateinit var fechaTratamiento: TextView
+    private lateinit var recomendacionesTratamiento: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -38,38 +36,10 @@ class DetallesTratamiento : AppCompatActivity() {
 
         // Configuracion del Recycler View de sintomas y su adaptador
         recyclerSintomas = findViewById<RecyclerView>(R.id.recycler_Sintomas)
-        val adapterSintomas = AdaptadorSintomas(this)
-
-        val dividerItemDecorationSintomas = DividerItemDecoration(recyclerSintomas.context, DividerItemDecoration.VERTICAL)
-        recyclerSintomas.addItemDecoration(dividerItemDecorationSintomas )
-
-        recyclerSintomas.layoutManager = LinearLayoutManager(this)
-        recyclerSintomas.adapter = adapterSintomas
-
-        // Configuracion del Recycler View de mediciones y su adaptador
-        recyclerMediciones = findViewById<RecyclerView>(R.id.recycler_Mediciones)
-        val adapterMediciones = AdaptadorMedicionesLista(this)
-
-        val dividerItemDecorationMediciones = DividerItemDecoration(recyclerMediciones.context, DividerItemDecoration.VERTICAL)
-        recyclerMediciones.addItemDecoration(dividerItemDecorationMediciones )
-
-        recyclerMediciones.layoutManager = LinearLayoutManager(this)
-        recyclerMediciones.adapter = adapterMediciones
-
-
-
-        // Configuracion del Recycler View de medicamentos y su adaptador
-        recyclerMedicamentos = findViewById<RecyclerView>(R.id.recycler_Medicamentos)
-        val adapterMedicamentos = AdaptadorMedicamentosLista(this)
-
-        val dividerItemDecorationMedicamentos = DividerItemDecoration(recyclerMedicamentos.context, DividerItemDecoration.VERTICAL)
-        recyclerMedicamentos.addItemDecoration(dividerItemDecorationMedicamentos )
-
-        recyclerMedicamentos.layoutManager = LinearLayoutManager(this)
-        recyclerMedicamentos.adapter = adapterMedicamentos
-
-
-
+        diagnosticoTratamiento = findViewById(R.id.diagnostico_tv)
+        fechaTratamiento = findViewById(R.id.fecha_tv)
+        recomendacionesTratamiento = findViewById(R.id.recomendaciones_tv)
+        medicoTratamiento = findViewById(R.id.medico_tv)
 
         toolbar = findViewById<Toolbar>(R.id.toolbar_detallesTratamiento)
         toolbarTitle = findViewById<TextView>(R.id.toolbarsecundario_title)
@@ -80,6 +50,26 @@ class DetallesTratamiento : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         setup()
+
+        // Obtener los datos del intent
+        val diagnostico = intent.getStringExtra("diagnostico")
+        val medico = intent.getStringExtra("medico")
+        val fecha = intent.getStringExtra("fecha")
+        val sintomas = intent.getStringArrayExtra("sintomas")?.toList() ?: emptyList()
+        val recomendaciones = intent.getStringExtra("recomendaciones")
+
+        // Asignar los valores a los elementos de la UI
+        diagnosticoTratamiento.text = diagnostico
+        medicoTratamiento.text = "Asignado por $medico"
+        fechaTratamiento.text = fecha
+        recomendacionesTratamiento.text = recomendaciones
+
+        // Configurar el RecyclerView de síntomas
+        val adapterSintomas = AdaptadorSintomas(this, sintomas)
+        val dividerItemDecorationSintomas = DividerItemDecoration(recyclerSintomas.context, DividerItemDecoration.VERTICAL)
+        recyclerSintomas.addItemDecoration(dividerItemDecorationSintomas)
+        recyclerSintomas.layoutManager = LinearLayoutManager(this)
+        recyclerSintomas.adapter = adapterSintomas
     }
 
     private fun setup() {

@@ -5,25 +5,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_margin="10dp"
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cumplimiento_cardview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
+                android:layout_margin="10dp"
+                android:layout_gravity="center"
                 app:cardCornerRadius="20dp">
 
                 <LinearLayout
                     android:id="@+id/campoRecycler1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
                     android:orientation="vertical">
 
                     <TextView
@@ -31,25 +30,27 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:gravity="center"
                         android:layout_margin="10dp"
-                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="Paracetamol"
                         android:textColor="@color/black"
                         android:textSize="28sp"
-                        android:text="Paracetamol" />
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tabletas_tv"
+                        android:id="@+id/frecuencia_tv"
                         android:layout_width="wrap_content"
-                        android:layout_marginLeft="15dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="3 veces al dia"
                         android:textColor="@color/black"
                         android:textSize="16sp"
-                        android:text="1 tableta(s)" />
+                        android:textStyle="bold" />
 
                     <Space
                         android:layout_width="match_parent"
                         android:layout_height="10dp" />
+
 
                     <LinearLayout
                         android:id="@+id/campoRecycler2"
@@ -72,10 +73,10 @@
                                 android:layout_height="wrap_content"
 
                                 android:layout_marginLeft="20dp"
-                                android:textStyle="bold"
+                                android:text="sab"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
-                                android:text="sab" />
+                                android:textStyle="bold" />
 
                             <Space
                                 android:layout_width="match_parent"
@@ -85,8 +86,8 @@
                                 android:id="@+id/day1.1"
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:layout_marginLeft="23dp"
                                 android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="23dp"
                                 android:src="@drawable/circulo_gris" />
 
                             <Space
@@ -97,8 +98,8 @@
                                 android:id="@+id/day1.2"
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:layout_marginLeft="23dp"
                                 android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="23dp"
                                 android:src="@drawable/circulo_gris" />
 
                             <Space
@@ -119,10 +120,10 @@
                                 android:layout_height="wrap_content"
 
                                 android:layout_marginLeft="20dp"
-                                android:textStyle="bold"
+                                android:text="dom"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
-                                android:text="dom" />
+                                android:textStyle="bold" />
 
                             <Space
                                 android:layout_width="match_parent"
@@ -132,8 +133,8 @@
                                 android:id="@+id/day2.1"
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:layout_marginLeft="23dp"
                                 android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="23dp"
                                 android:src="@drawable/circulo_gris" />
 
                             <Space
@@ -144,8 +145,8 @@
                                 android:id="@+id/day2.2"
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:layout_marginLeft="23dp"
                                 android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="23dp"
                                 android:src="@drawable/circulo_gris" />
 
                             <Space
@@ -166,10 +167,10 @@
                                 android:layout_height="wrap_content"
 
                                 android:layout_marginLeft="20dp"
-                                android:textStyle="bold"
+                                android:text="lun"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
-                                android:text="lun" />
+                                android:textStyle="bold" />
 
                             <Space
                                 android:layout_width="match_parent"
@@ -179,8 +180,8 @@
                                 android:id="@+id/day3.1"
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:layout_marginLeft="23dp"
                                 android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="23dp"
                                 android:src="@drawable/circulo_gris" />
 
                             <Space
@@ -191,8 +192,8 @@
                                 android:id="@+id/day3.2"
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:layout_marginLeft="23dp"
                                 android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="23dp"
                                 android:src="@drawable/circulo_gris" />
 
                             <Space
@@ -213,10 +214,10 @@
                                 android:layout_height="wrap_content"
 
                                 android:layout_marginLeft="20dp"
-                                android:textStyle="bold"
+                                android:text="mar"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
-                                android:text="mar" />
+                                android:textStyle="bold" />
 
                             <Space
                                 android:layout_width="match_parent"
@@ -226,8 +227,8 @@
                                 android:id="@+id/day4.1"
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:layout_marginLeft="23dp"
                                 android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="23dp"
                                 android:src="@drawable/circulo_gris" />
 
                             <Space
@@ -238,8 +239,8 @@
                                 android:id="@+id/day4.2"
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:layout_marginLeft="23dp"
                                 android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="23dp"
                                 android:src="@drawable/circulo_gris" />
 
                             <Space
@@ -260,10 +261,10 @@
                                 android:layout_height="wrap_content"
 
                                 android:layout_marginLeft="20dp"
-                                android:textStyle="bold"
+                                android:text="mie"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
-                                android:text="mie" />
+                                android:textStyle="bold" />
 
                             <Space
                                 android:layout_width="match_parent"
@@ -273,8 +274,8 @@
                                 android:id="@+id/day5.1"
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:layout_marginLeft="23dp"
                                 android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="23dp"
                                 android:src="@drawable/circulo_gris" />
 
                             <Space
@@ -285,8 +286,8 @@
                                 android:id="@+id/day5.2"
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:layout_marginLeft="23dp"
                                 android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="23dp"
                                 android:src="@drawable/circulo_gris" />
 
                             <Space
@@ -307,10 +308,10 @@
                                 android:layout_height="wrap_content"
 
                                 android:layout_marginLeft="20dp"
-                                android:textStyle="bold"
+                                android:text="jue"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
-                                android:text="jue" />
+                                android:textStyle="bold" />
 
                             <Space
                                 android:layout_width="match_parent"
@@ -320,8 +321,8 @@
                                 android:id="@+id/day6.1"
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:layout_marginLeft="23dp"
                                 android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="23dp"
                                 android:src="@drawable/circulo_gris" />
 
                             <Space
@@ -332,8 +333,8 @@
                                 android:id="@+id/day6.2"
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:layout_marginLeft="23dp"
                                 android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="23dp"
                                 android:src="@drawable/circulo_gris" />
 
                             <Space
@@ -354,10 +355,10 @@
                                 android:layout_height="wrap_content"
 
                                 android:layout_marginLeft="20dp"
-                                android:textStyle="bold"
+                                android:text="vie"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
-                                android:text="vie" />
+                                android:textStyle="bold" />
 
                             <Space
                                 android:layout_width="match_parent"
@@ -367,8 +368,8 @@
                                 android:id="@+id/day7.1"
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:layout_marginLeft="23dp"
                                 android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="23dp"
                                 android:src="@drawable/check_icon" />
 
                             <Space
@@ -379,8 +380,8 @@
                                 android:id="@+id/day7.2"
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:layout_marginLeft="23dp"
                                 android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="23dp"
                                 android:src="@drawable/cross_icon" />
 
                             <Space
