@@ -1,0 +1,64 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginBottom="10dp"
+    android:background="?attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/dia1_tv"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="18dp"
+        android:src="@drawable/circulo_gris" />
+
+    <ImageView
+        android:id="@+id/dia2_tv"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="23dp"
+        android:src="@drawable/circulo_gris" />
+
+    <ImageView
+        android:id="@+id/dia3_tv"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="23dp"
+        android:src="@drawable/circulo_gris" />
+
+    <ImageView
+        android:id="@+id/dia4_tv"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="23dp"
+        android:src="@drawable/circulo_gris" />
+
+    <ImageView
+        android:id="@+id/dia5_tv"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="23dp"
+        android:src="@drawable/circulo_gris" />
+
+    <ImageView
+        android:id="@+id/dia6_tv"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="23dp"
+        android:src="@drawable/circulo_gris" />
+
+    <ImageView
+        android:id="@+id/dia7_tv"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="23dp"
+        android:src="@drawable/circulo_gris" />
+
+</LinearLayout>

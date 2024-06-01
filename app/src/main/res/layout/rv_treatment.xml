@@ -9,10 +9,7 @@
         android:id="@+id/treatment_cardview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
+        android:layout_margin="10dp"
         app:cardCornerRadius="20dp">
 
         <LinearLayout
@@ -26,7 +23,7 @@
                 android:layout_height="5dp" />
 
             <TextView
-                android:id="@+id/asignado_tv"
+                android:id="@+id/medico_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
@@ -99,12 +96,11 @@
 
             <ImageView
                 android:id="@+id/icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_margin="15dp"
                 android:layout_gravity="right"
-                app:srcCompat="@android:drawable/ic_dialog_info"
-                app:tint="@color/lightblue" />
+                app:srcCompat="@drawable/ic_medical_treatment" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
