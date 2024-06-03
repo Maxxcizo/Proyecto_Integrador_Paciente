@@ -1,5 +1,6 @@
 package com.example.medsyncpaciente
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
@@ -33,9 +34,11 @@ class CitasActivity : AppCompatActivity() {
             insets
         }
 
+        val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+
         // Configuracion del Recycler View y su adaptador
         recyclerView = findViewById(R.id.recycler_citas)
-        val adapter = AdaptadorCitas(this)
+        val adapter = AdaptadorCitas(this, prefs)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
