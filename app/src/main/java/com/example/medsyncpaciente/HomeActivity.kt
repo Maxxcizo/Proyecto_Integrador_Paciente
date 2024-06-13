@@ -60,40 +60,44 @@ class HomeActivity : AppCompatActivity() {
         val password = bundle?.getString("password")
         var pacienteId = ""
 
-        // Obtener el userUID de Firebase Authentication basado en el correo electrónico
+        // Obtener el userUID de Firebase Authentication basado en el correo electrónico y contraseña
         val auth = FirebaseAuth.getInstance()
-        val user = auth.currentUser
-        var userUID: String? = null
-        if (user != null) {
-            userUID = user.uid
-        } else {
-            // El usuario no ha iniciado sesión o el correo electrónico no coincide con ningún usuario
-            // Puedes manejar esta situación de acuerdo a tu lógica de la aplicación
-            Log.e("HomeActivity", "No user found or email doesn't match any user")
-        }
+        auth.signInWithEmailAndPassword(email ?: "", password ?: "")
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, get user UID
+                    val user = auth.currentUser
+                    val userUID = user?.uid
 
-        //Obtener el id del paciente
-        bd.collection("Paciente")
-            .whereEqualTo("Correo", email)
-            .get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    pacienteId = document.id
-                    Log.d("HomeActivity", "Se obtuvo el id del paciente: $pacienteId")
+                    //Obtener el id del médico
+                    bd.collection("Paciente")
+                        .whereEqualTo("Correo", email)
+                        .get()
+                        .addOnSuccessListener { documents ->
+                            for (document in documents) {
+                                pacienteId = document.id
+                                Log.d("HomeActivity", "Se obtuvo el id del medico: $pacienteId")
 
-                    // Mover la lógica de SharedPreferences aquí
-                    val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
-                    prefs.putString("email", email)
-                    prefs.putString("password", password)
-                    prefs.putString("userUID", userUID)
-                    prefs.putString("pacienteId", pacienteId)
-                    prefs.apply()
+                                // Guardar datos en SharedPreferences
+                                val prefs = getSharedPreferences(
+                                    getString(R.string.prefs_file),
+                                    Context.MODE_PRIVATE
+                                ).edit()
+                                prefs.putString("email", email)
+                                prefs.putString("password", password)
+                                prefs.putString("userUID", userUID)
+                                prefs.putString("medicoId", pacienteId)
+                                prefs.apply()
+                            }
+                        }
+                        .addOnFailureListener { exception ->
+                            println("Error al obtener el documento: $exception")
+                        }
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.e("HomeActivity", "Authentication failed.")
                 }
             }
-            .addOnFailureListener { exception ->
-                println("Error al obtener el documento: $exception")
-            }
-
 
         val prefs2 = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
         val allEntries: Map<String, *> = prefs2.all

@@ -52,11 +52,11 @@ class DetallesTratamiento : AppCompatActivity() {
         setup()
 
         // Obtener los datos del intent
-        val diagnostico = intent.getStringExtra("diagnostico")
-        val medico = intent.getStringExtra("medico")
-        val fecha = intent.getStringExtra("fecha")
-        val sintomas = intent.getStringArrayExtra("sintomas")?.toList() ?: emptyList()
-        val recomendaciones = intent.getStringExtra("recomendaciones")
+        val diagnostico = intent.getStringExtra("DIAGNOSTICO")
+        val medico = intent.getStringExtra("NOMBRE_COMPLETO")
+        val fecha = intent.getStringExtra("TRATAMIENTO_FECHA_INICIO")
+        val sintomas = intent.getStringArrayExtra("SINTOMAS")?.toList() ?: emptyList()
+        val recomendaciones = intent.getStringExtra("RECOMENDACIONES")
 
         // Asignar los valores a los elementos de la UI
         diagnosticoTratamiento.text = diagnostico

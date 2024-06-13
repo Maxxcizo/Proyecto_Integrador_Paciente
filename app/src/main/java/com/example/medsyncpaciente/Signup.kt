@@ -66,9 +66,9 @@ class Signup : AppCompatActivity() {
 
             var errorOccurred = false
 
-            if (nombre.length !in 3..20) {
+            if (nombre.length !in 3..10) {
                 errorOccurred = true
-                nombre_et.error = "El nombre debe tener entre 3 y 20 caracteres."
+                nombre_et.error = "El nombre debe tener entre 3 y 10 caracteres."
             }
 
             if (ap.length !in 3..10) {

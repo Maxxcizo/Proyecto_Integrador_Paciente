@@ -49,11 +49,6 @@ class TreatmentFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
 
-        adapter.cargarTratamientos {
-            // Una vez cargados los medicamentos, establecer el adaptador
-            recyclerView.adapter = adapter
-        }
-
         return view
     }
 
