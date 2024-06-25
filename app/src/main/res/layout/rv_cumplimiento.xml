@@ -57,341 +57,98 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:layout_margin="13dp"
                         android:gravity="center"
                         android:orientation="horizontal">
 
-                        <LinearLayout
-                            android:id="@+id/campoRecycler3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/dia7"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="10dp"
+                            android:text="14"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
-                            <TextView
-                                android:id="@+id/sab"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                        <TextView
+                            android:id="@+id/dia6"
+                            android:layout_width="20sp"
+                            android:layout_height="20sp"
 
-                                android:layout_marginLeft="20dp"
-                                android:text="sab"
-                                android:textColor="@color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
+                            android:layout_marginLeft="20dp"
+                            android:text="15"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
+                        <TextView
+                            android:id="@+id/dia5"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
 
-                            <ImageView
-                                android:id="@+id/day1.1"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginLeft="23dp"
-                                android:src="@drawable/circulo_gris" />
+                            android:layout_marginLeft="20dp"
+                            android:text="16"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
+                        <TextView
+                            android:id="@+id/dia4"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
 
-                            <ImageView
-                                android:id="@+id/day1.2"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginLeft="23dp"
-                                android:src="@drawable/circulo_gris" />
+                            android:layout_marginLeft="20dp"
+                            android:text="17"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
+                        <TextView
+                            android:id="@+id/dia3"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
 
-                        </LinearLayout>
+                            android:layout_marginLeft="20dp"
+                            android:text="18"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
-                        <LinearLayout
-                            android:id="@+id/campoRecycler4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/dia2"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
 
-                            <TextView
-                                android:id="@+id/dom"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:text="19"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
-                                android:layout_marginLeft="20dp"
-                                android:text="dom"
-                                android:textColor="@color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/dia1"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
 
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
-
-                            <ImageView
-                                android:id="@+id/day2.1"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginLeft="23dp"
-                                android:src="@drawable/circulo_gris" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
-
-                            <ImageView
-                                android:id="@+id/day2.2"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginLeft="23dp"
-                                android:src="@drawable/circulo_gris" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/campoRecycler5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/lun"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-
-                                android:layout_marginLeft="20dp"
-                                android:text="lun"
-                                android:textColor="@color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
-
-                            <ImageView
-                                android:id="@+id/day3.1"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginLeft="23dp"
-                                android:src="@drawable/circulo_gris" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
-
-                            <ImageView
-                                android:id="@+id/day3.2"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginLeft="23dp"
-                                android:src="@drawable/circulo_gris" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/campoRecycler6"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/mar"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-
-                                android:layout_marginLeft="20dp"
-                                android:text="mar"
-                                android:textColor="@color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
-
-                            <ImageView
-                                android:id="@+id/day4.1"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginLeft="23dp"
-                                android:src="@drawable/circulo_gris" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
-
-                            <ImageView
-                                android:id="@+id/day4.2"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginLeft="23dp"
-                                android:src="@drawable/circulo_gris" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/campoRecycler7"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/mie"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-
-                                android:layout_marginLeft="20dp"
-                                android:text="mie"
-                                android:textColor="@color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
-
-                            <ImageView
-                                android:id="@+id/day5.1"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginLeft="23dp"
-                                android:src="@drawable/circulo_gris" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
-
-                            <ImageView
-                                android:id="@+id/day5.2"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginLeft="23dp"
-                                android:src="@drawable/circulo_gris" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/campoRecycler8"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/jue"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-
-                                android:layout_marginLeft="20dp"
-                                android:text="jue"
-                                android:textColor="@color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
-
-                            <ImageView
-                                android:id="@+id/day6.1"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginLeft="23dp"
-                                android:src="@drawable/circulo_gris" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
-
-                            <ImageView
-                                android:id="@+id/day6.2"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginLeft="23dp"
-                                android:src="@drawable/circulo_gris" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/campoRecycler9"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/vie"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-
-                                android:layout_marginLeft="20dp"
-                                android:text="vie"
-                                android:textColor="@color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
-
-                            <ImageView
-                                android:id="@+id/day7.1"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginLeft="23dp"
-                                android:src="@drawable/check_icon" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
-
-                            <ImageView
-                                android:id="@+id/day7.2"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginLeft="23dp"
-                                android:src="@drawable/cross_icon" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="10dp" />
-
-                        </LinearLayout>
+                            android:layout_marginLeft="20dp"
+                            android:text="20"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
 
                     </LinearLayout>
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="10dp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_Tomas"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        />
 
                 </LinearLayout>
 

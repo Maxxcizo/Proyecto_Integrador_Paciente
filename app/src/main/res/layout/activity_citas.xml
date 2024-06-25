@@ -9,10 +9,19 @@
         android:id="@+id/toolbar_citas"
         layout="@layout/toolbarsecundario" />
 
+    <Button
+        android:id="@+id/btn_canceladas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar_citas"
+        android:layout_alignParentStart="true"
+        android:text="Citas Canceladas"
+        android:layout_margin="10dp"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar_citas"
+        android:layout_below="@id/btn_canceladas"
         android:orientation="vertical">
 
         <TextView

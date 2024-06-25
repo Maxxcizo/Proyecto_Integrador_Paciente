@@ -2,12 +2,13 @@ package com.example.medsyncpaciente.fragments
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.medsyncpaciente.Adapters.AdaptadorMediciones
@@ -15,31 +16,23 @@ import com.example.medsyncpaciente.GraficasMedicionesActivity
 import com.example.medsyncpaciente.R
 import com.example.medsyncpaciente.RegistroSintomasActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.firestore.FirebaseFirestore
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [MeasurementFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MeasurementFragment : Fragment() {
-    // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var botonFlotante: FloatingActionButton
     private lateinit var registrarButton: Button
 
+    private val db = FirebaseFirestore.getInstance()
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var adapter: AdaptadorMediciones
+    private val diccionarioMediciones = listOf("Presion Arterial", "Glucosa en sangre", "Oxigenacion en Sangre", "Frecuencia Cardiaca")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
         }
     }
 
@@ -47,29 +40,22 @@ class MeasurementFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_measurement, container, false)
 
-        // se obtiene la instancia de los sharedPreferences
-        val sharedPreferences = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+        sharedPreferences = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
 
         recyclerView = view.findViewById(R.id.recyclerView_Mediciones)
-        botonFlotante = view.findViewById<FloatingActionButton>(R.id.fab)
+        botonFlotante = view.findViewById(R.id.fab)
         registrarButton = view.findViewById(R.id.registrarMediciones_btn)
-        val adapter = AdaptadorMediciones(requireActivity(), sharedPreferences) // Usar requireActivity() para obtener el contexto de la actividad y ademas se mandan las shared Preferences
-        recyclerView.layoutManager = LinearLayoutManager(activity)
 
-        adapter.cargarMediciones {
-            // Todas las mediciones se han cargado, iniciar la siguiente actividad
-            // Aquí puedes llamar al método para configurar el RecyclerView
-            recyclerView.adapter = adapter
-        }
+        recyclerView.layoutManager = LinearLayoutManager(activity)
+        adapter = AdaptadorMediciones(requireContext())
+        recyclerView.adapter = adapter
+
+        cargarMediciones()
 
         botonFlotante.setOnClickListener {
-            // Crear un Intent para iniciar la actividad deseada
-            val intent = Intent(requireContext(), GraficasMedicionesActivity::class.java)
-            // Iniciar la actividad
-            startActivity(intent)
+            startActivity(Intent(requireContext(), GraficasMedicionesActivity::class.java))
         }
 
         registrarButton.setOnClickListener {
@@ -79,22 +65,42 @@ class MeasurementFragment : Fragment() {
         return view
     }
 
+    private fun cargarMediciones() {
+        val pacienteId = sharedPreferences.getString("pacienteId", null)
+        val medicionesAsignadas = mutableListOf<String>()
+        val frecuenciaMedicionesAsignadas = mutableListOf<Int>()
+        var loadedMediciones = 0
+
+        for (medicion in diccionarioMediciones) {
+            val frecuenciaCardiacaRef =
+                db.collection("Paciente").document(pacienteId.toString()).collection("Mediciones")
+                    .document(medicion)
+
+            frecuenciaCardiacaRef.get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val document = task.result
+                        if (document != null) {
+                            val frecuencia = document.getLong("Frecuencia")
+                            medicionesAsignadas.add(medicion)
+                            if (frecuencia != null) {
+                                frecuenciaMedicionesAsignadas.add(frecuencia.toInt())
+                            }
+                        }
+                    }
+                    loadedMediciones++
+                    if (loadedMediciones == diccionarioMediciones.size) {
+                        adapter.setMediciones(medicionesAsignadas, frecuenciaMedicionesAsignadas)
+                    }
+                }
+        }
+    }
+
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MeasurementFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             MeasurementFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
                 }
             }
     }

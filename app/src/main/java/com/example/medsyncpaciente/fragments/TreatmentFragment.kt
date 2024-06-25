@@ -1,74 +1,124 @@
 package com.example.medsyncpaciente.fragments
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.medsyncpaciente.Adapters.AdaptadorMedicina
 import com.example.medsyncpaciente.Adapters.AdaptadorTratamientos
+import com.example.medsyncpaciente.DataClases.Tratamiento
 import com.example.medsyncpaciente.R
+import com.google.firebase.firestore.FirebaseFirestore
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val TAG = "TreatmentFragment"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [TreatmentFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class TreatmentFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-    private lateinit var recyclerView: RecyclerView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adaptadorTratamientos: AdaptadorTratamientos
+    private lateinit var sharedPreferences: SharedPreferences
+    private var pacienteID: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_treatment, container, false)
-
-        val sharedPreferences = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
         recyclerView = view.findViewById(R.id.recyclerView_Treatment)
-        val adapter = AdaptadorTratamientos(requireActivity(), sharedPreferences) // Usar requireActivity() para obtener el contexto de la actividad
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = adapter
-
         return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SettingsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            TreatmentFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        sharedPreferences = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+        pacienteID = sharedPreferences.getString("pacienteId", null)
+
+        adaptadorTratamientos = AdaptadorTratamientos(requireContext(), sharedPreferences)
+
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = adaptadorTratamientos
+        }
+
+        loadTratamientos()
+    }
+
+    private fun loadTratamientos() {
+        if (pacienteID != null) {
+            val db = FirebaseFirestore.getInstance()
+            db.collection("Paciente").document(pacienteID!!).collection("Tratamientos")
+                .get()
+                .addOnSuccessListener { result ->
+                    val tratamientos = mutableListOf<Tratamiento>()
+                    for (document in result) {
+                        val tratamientoRef = document.getDocumentReference("TratamientoID") ?: continue
+                        tratamientoRef.get()
+                            .addOnSuccessListener { citaDocument ->
+                                val fechaInicio = citaDocument.getString("FechaInicio") ?: ""
+                                val fechaFin = citaDocument.getString("FechaFin") ?: ""
+                                val diagnostico = citaDocument.getString("Diagnostico") ?: ""
+                                val sintomas = citaDocument.get("Sintomas") as? List<String> ?: emptyList()
+                                val recomendaciones = citaDocument.getString("Recomendaciones") ?: ""
+                                val medicoRef = citaDocument.getDocumentReference("MedicoId") ?: return@addOnSuccessListener
+
+                                medicoRef.get()
+                                    .addOnSuccessListener { medicoDocument ->
+                                        val nombre = medicoDocument.getString("Nombre(s)") ?: ""
+                                        val apellidoPaterno = medicoDocument.getString("Apellido Paterno") ?: ""
+                                        val apellidoMaterno = medicoDocument.getString("Apellido Materno") ?: ""
+                                        val nombreCompleto = "$nombre $apellidoPaterno $apellidoMaterno".trim()
+
+                                        tratamientos.add(
+                                            Tratamiento(
+                                                document.id,
+                                                nombreCompleto,
+                                                fechaInicio,
+                                                fechaFin,
+                                                diagnostico,
+                                                sintomas,
+                                                recomendaciones,
+                                                tratamientoRef
+                                            )
+                                        )
+
+                                        // Ordenar tratamientos por fecha de inicio
+                                        tratamientos.sortBy { it.fechaInicio }
+                                        adaptadorTratamientos.actualizarLista(tratamientos)
+                                    }
+                                    .addOnFailureListener { exception ->
+                                        Log.e(TAG, "Error al obtener el documento del médico", exception)
+                                        // Manejar error al obtener el documento del médico
+                                        showError("Error al obtener el médico")
+                                    }
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.e(TAG, "Error al obtener el documento de tratamiento", exception)
+                                // Manejar error al obtener el documento de tratamiento
+                                showError("Error al obtener el tratamiento")
+                            }
+                    }
                 }
-            }
+                .addOnFailureListener { exception ->
+                    Log.e(TAG, "Error al obtener los documentos de tratamientos", exception)
+                    // Manejar error al obtener los documentos de tratamientos
+                    showError("Error al obtener los tratamientos")
+                }
+        } else {
+            Log.e(TAG, "Paciente ID no encontrado en SharedPreferences")
+            // Manejar caso donde pacienteID es null
+            showError("Paciente ID no encontrado")
+        }
+    }
+
+    private fun showError(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        // Aquí puedes implementar cualquier otra lógica para manejar el error, como mostrar un mensaje en la UI
     }
 }

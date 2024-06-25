@@ -57,17 +57,17 @@ class PerfilActivity : AppCompatActivity() {
         val email = prefs.getString("email", null)
 
         // Verificar si el correo electrónico ya está registrado
-        bd.collection("users").whereEqualTo("Correo", email).get()
+        bd.collection("Paciente").whereEqualTo("Correo", email).get()
             .addOnSuccessListener { documents ->
                 if (documents.isEmpty) {
                     // El correo electrónico no está registrado, continuar con el registro
                 } else {
                     // El correo electrónico ya está registrado, mostrar mensaje de alerta
                     val documentSnapshot = documents.documents.first() // Obtener el primer documento
-                    nombre_tv.setText(documentSnapshot.getString("Nombre(s)"))
-                    ap_tv.setText(documentSnapshot.getString("Apellido Paterno"))
-                    am_tv.setText(documentSnapshot.getString("Apellido Materno"))
-                    correo_tv.setText(documentSnapshot.getString("Correo"))
+                    nombre_tv.setText("Nombre: "+documentSnapshot.getString("Nombre(s)"))
+                    ap_tv.setText("Apellido Paterno: "+documentSnapshot.getString("Apellido Paterno"))
+                    am_tv.setText("Apellido Materno: "+documentSnapshot.getString("Apellido Materno"))
+                    correo_tv.setText("Correo: "+documentSnapshot.getString("Correo"))
                     tel_et.setText(documentSnapshot.getString("Telefono"))
                 }
             }
@@ -96,7 +96,7 @@ class PerfilActivity : AppCompatActivity() {
             val email = prefs.getString("email", null)
 
             // Obtener la referencia al documento del usuario
-            bd.collection("users").whereEqualTo("Correo", email).get()
+            bd.collection("Paciente").whereEqualTo("Correo", email).get()
                 .addOnSuccessListener { documents ->
                     if (!documents.isEmpty) {
                         val documentSnapshot = documents.documents.first() // Obtener el primer documento
@@ -106,7 +106,7 @@ class PerfilActivity : AppCompatActivity() {
                         )
 
                         // Actualizar el numero de telefono en la base de datos
-                        bd.collection("users").document(userId).update(userData)
+                        bd.collection("Paciente").document(userId).update(userData)
                             .addOnSuccessListener {
                                 Toast.makeText(this, "Número de teléfono actualizado correctamente", Toast.LENGTH_SHORT).show()
                             }

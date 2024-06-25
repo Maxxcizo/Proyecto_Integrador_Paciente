@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
 
     <application
@@ -16,6 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MedSyncPaciente"
         tools:targetApi="31">
+        <activity
+            android:name=".CanceledAppointmentsActivity"
+            android:exported="false" />
         <activity
             android:name=".FullScreenGraphActivity"
             android:exported="false" />

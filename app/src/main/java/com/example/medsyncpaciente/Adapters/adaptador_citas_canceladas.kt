@@ -1,5 +1,6 @@
 package com.example.medsyncpaciente.Adapters
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -8,15 +9,12 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.medsyncpaciente.DetallesCitaActivity
+import com.example.medsyncpaciente.AddAppointmentActivity
 import com.example.medsyncpaciente.R
-import com.google.firebase.firestore.DocumentReference
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-data class Cita(val citaID: String, val medico: String, val fecha: String, val citaRef: DocumentReference, val pacienteID:String, val medicoID: String)
-
-class AdaptadorCitas(private val context: Context, private val citas: List<Cita>) : RecyclerView.Adapter<AdaptadorCitas.ViewHolder>() {
+class AdaptadorCitasCanceladas(private val context: Context, private val citas: List<Cita>) : RecyclerView.Adapter<AdaptadorCitasCanceladas.ViewHolder>() {
 
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
@@ -31,15 +29,19 @@ class AdaptadorCitas(private val context: Context, private val citas: List<Cita>
         holder.medicotext.text = cita.medico
         holder.fechatext.text = cita.fecha
         holder.campoRecycler.setOnClickListener {
-            // Acción a realizar cuando se haga clic en el elemento de la lista
-            val intent = Intent(context, DetallesCitaActivity::class.java)
-            intent.putExtra("CITA_ID", cita.citaID)
-            intent.putExtra("CITA_REF", cita.citaRef.path) // Pasar la referencia de la cita como una cadena
-            intent.putExtra("CITA_FECHA", cita.fecha)
-            intent.putExtra("PACIENTE_ID", cita.pacienteID) // Pasar pacienteID a DetallesCitaActivity
-            intent.putExtra("NOMBRE_COMPLETO", cita.medico)
-            intent.putExtra("MEDICO_ID", cita.medicoID)
-            context.startActivity(intent)
+            // Mostrar diálogo de confirmación
+            AlertDialog.Builder(context)
+                .setTitle("Reprogramar Cita")
+                .setMessage("¿Deseas reprogramar esta cita?")
+                .setPositiveButton("Sí") { dialog, which ->
+                    // Acción a realizar cuando se confirma la reprogramación
+                    val intent = Intent(context, AddAppointmentActivity::class.java)
+                    intent.putExtra("CITA_FECHA", cita.fecha)
+                    intent.putExtra("MEDICO_ID", cita.medicoID)
+                    context.startActivity(intent)
+                }
+                .setNegativeButton("No", null)
+                .show()
         }
     }
 

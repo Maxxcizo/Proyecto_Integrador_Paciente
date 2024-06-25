@@ -76,7 +76,7 @@ class HomeActivity : AppCompatActivity() {
                         .addOnSuccessListener { documents ->
                             for (document in documents) {
                                 pacienteId = document.id
-                                Log.d("HomeActivity", "Se obtuvo el id del medico: $pacienteId")
+                                Log.d("HomeActivity", "Se obtuvo el id del paciente: $pacienteId")
 
                                 // Guardar datos en SharedPreferences
                                 val prefs = getSharedPreferences(
@@ -86,7 +86,7 @@ class HomeActivity : AppCompatActivity() {
                                 prefs.putString("email", email)
                                 prefs.putString("password", password)
                                 prefs.putString("userUID", userUID)
-                                prefs.putString("medicoId", pacienteId)
+                                prefs.putString("pacienteId", pacienteId)
                                 prefs.apply()
                             }
                         }
@@ -162,19 +162,16 @@ class HomeActivity : AppCompatActivity() {
         when (fragment) {
             is TodayFragment -> {
                 toolbar.menu.findItem(R.id.menu_notification)?.isVisible = true
-                toolbar.menu.findItem(R.id.menu_export)?.isVisible = false
                 toolbar.menu.findItem(R.id.menu_account)?.isVisible = false
                 toolbar.menu.findItem(R.id.menu_citas)?.isVisible = true
             }
             is ProgressFragment -> {
                 toolbar.menu.findItem(R.id.menu_notification)?.isVisible = false
-                toolbar.menu.findItem(R.id.menu_export)?.isVisible = true
                 toolbar.menu.findItem(R.id.menu_account)?.isVisible = false
                 toolbar.menu.findItem(R.id.menu_citas)?.isVisible = true
             }
             is TreatmentFragment, is MeasurementFragment, is MedicamentosFragment -> {
                 toolbar.menu.findItem(R.id.menu_notification)?.isVisible = false
-                toolbar.menu.findItem(R.id.menu_export)?.isVisible = false
                 toolbar.menu.findItem(R.id.menu_account)?.isVisible = true
                 toolbar.menu.findItem(R.id.menu_citas)?.isVisible = true
             }
@@ -184,7 +181,6 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         toolbar.menu.findItem(R.id.menu_notification)?.isVisible = true
-        toolbar.menu.findItem(R.id.menu_export)?.isVisible = false
         toolbar.menu.findItem(R.id.menu_account)?.isVisible = false
         toolbar.menu.findItem(R.id.menu_citas)?.isVisible = true
         return super.onCreateOptionsMenu(menu)
@@ -199,11 +195,6 @@ class HomeActivity : AppCompatActivity() {
             R.id.menu_account -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
                 Toast.makeText(this, "Ajustes", Toast.LENGTH_SHORT).show()
-                return true
-            }
-            R.id.menu_export -> {
-                startActivity(Intent(this, ExportActivity::class.java))
-                Toast.makeText(this, "Exportar", Toast.LENGTH_SHORT).show()
                 return true
             }
             R.id.menu_notification -> {

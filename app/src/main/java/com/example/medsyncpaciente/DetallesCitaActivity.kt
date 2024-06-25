@@ -10,7 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 class DetallesCitaActivity : AppCompatActivity() {
 
@@ -26,6 +27,7 @@ class DetallesCitaActivity : AppCompatActivity() {
     private lateinit var pacienteID: String
     private lateinit var citaRefPath: String
     private lateinit var nombreMedico: String
+    private lateinit var medicoID: String // Agrega esta variable para el ID del médico
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,9 +53,10 @@ class DetallesCitaActivity : AppCompatActivity() {
         pacienteID = intent.getStringExtra("PACIENTE_ID") ?: ""
         citaRefPath = intent.getStringExtra("CITA_REF") ?: ""
         nombreMedico = intent.getStringExtra("NOMBRE_COMPLETO") ?: ""
+        medicoID = intent.getStringExtra("MEDICO_ID") ?: "" // Obtén el ID del médico desde los extras
 
-        medicoTextView.setText(nombreMedico)
-        fechaTextView.setText(citaFecha)
+        medicoTextView.text = nombreMedico
+        fechaTextView.text = citaFecha
 
         setupListeners()
     }
@@ -89,21 +92,13 @@ class DetallesCitaActivity : AppCompatActivity() {
         if (diffDays >= 1) {
             val db = FirebaseFirestore.getInstance()
             val citaRealRef = db.document(citaRefPath)
-            val pacienteCitaRef = db.collection("Paciente").document(pacienteID).collection("Citas").document(citaID)
 
-            println("CitaRefPath: $citaRefPath - CitaID: $citaID")
-            println("CitaRealRef: $citaRealRef - pacienteCitaRef: $pacienteCitaRef")
+            val updates = hashMapOf<String, Any>("Cancelada" to true)
 
-            citaRealRef.delete()
+            citaRealRef.update(updates)
                 .addOnSuccessListener {
-                    pacienteCitaRef.delete()
-                        .addOnSuccessListener {
-                            Toast.makeText(this, "Cita cancelada.", Toast.LENGTH_SHORT).show()
-                            finish()
-                        }
-                        .addOnFailureListener { exception ->
-                            Toast.makeText(this, "Error al eliminar la cita de la subcolección del paciente: ${exception.message}", Toast.LENGTH_SHORT).show()
-                        }
+                    Toast.makeText(this, "Cita cancelada correctamente.", Toast.LENGTH_SHORT).show()
+                    finish()
                 }
                 .addOnFailureListener { exception ->
                     Toast.makeText(this, "Error al cancelar la cita: ${exception.message}", Toast.LENGTH_SHORT).show()

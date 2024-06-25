@@ -1,175 +1,126 @@
-import android.Manifest
-import android.app.Activity
+
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.os.Build
 import android.os.Environment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.medsyncpaciente.DataClases.Medicamento
 import com.example.medsyncpaciente.R
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
 import com.itextpdf.kernel.geom.PageSize
 import com.itextpdf.kernel.pdf.PdfDocument
 import com.itextpdf.kernel.pdf.PdfWriter
 import com.itextpdf.layout.Document
 import com.itextpdf.layout.element.Paragraph
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 class AdaptadorTomas(
     private val context: Context,
-    private val tomas: List<Int>,
-    private val medicamento: String,
+    private val medicamento: Medicamento,
     private val sharedPreferences: SharedPreferences
 ) : RecyclerView.Adapter<AdaptadorTomas.ViewHolder>() {
 
-    private val db = FirebaseFirestore.getInstance()
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    private val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+    private val frecuencia = medicamento.frecuencia
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val diasImageViews: List<ImageView> = listOf(
-            itemView.findViewById(R.id.dia1_tv),
-            itemView.findViewById(R.id.dia2_tv),
-            itemView.findViewById(R.id.dia3_tv),
-            itemView.findViewById(R.id.dia4_tv),
-            itemView.findViewById(R.id.dia5_tv),
+            itemView.findViewById(R.id.dia7_tv),
             itemView.findViewById(R.id.dia6_tv),
-            itemView.findViewById(R.id.dia7_tv)
+            itemView.findViewById(R.id.dia5_tv),
+            itemView.findViewById(R.id.dia4_tv),
+            itemView.findViewById(R.id.dia3_tv),
+            itemView.findViewById(R.id.dia2_tv),
+            itemView.findViewById(R.id.dia1_tv)
         )
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        println("AdaptadorTomas onCreateViewHolder llamado")
         val v = LayoutInflater.from(parent.context).inflate(R.layout.rv_tomas, parent, false)
         return ViewHolder(v)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val toma = tomas[position]
+        println("AdaptadorTomas onBindViewHolder llamado para la posición: $position")
 
-        val pacienteId = sharedPreferences.getString("pacienteId", null)
-        println("Paciente ID: $pacienteId")
+        Log.i("Registros por dia", "Registros por día del medicamento: ${medicamento.nombre} son ${medicamento.registrosPorDia.toString()}")
+
+        // Lista para almacenar los estados de las mediciones
+        val estadosMediciones = mutableListOf<String>()
+
+        // Iterar sobre los últimos 7 días
+        for (i in 1..7) {
+            val diaBuscado = "dia$i"
+
+            // Buscar el registro por día correspondiente al día buscado
+            val registroPorDia = medicamento.registrosPorDia.find { it.identificadorDia == diaBuscado }
+
+            // Verificar si se encontró el registro por día para el día buscado
+            if (registroPorDia != null) {
+                // Obtener la lista de registros de toma de ese día
+                val tomasDelDia = registroPorDia.listaRegistros
+
+                // Iterar sobre las tomas del día y obtener el estado
+
+                val estado = tomasDelDia[position].estado
+                estadosMediciones.add(estado)
+                println("Estado de la toma del día $diaBuscado: $estado")
+            }
+        }
+
+        Log.i("Estados del dia","Position: $position, ${medicamento.nombre} son ${estadosMediciones}")
+
+        updateImageViews(holder, estadosMediciones)
+
+       // generatePDFReport(medicamento)
+
+
+/*        val pacienteId = sharedPreferences.getString("pacienteId", null)
+
         if (pacienteId != null) {
-            val registroTomaRef = db.collection("Paciente").document(pacienteId)
-                .collection("Medicamentos").document(medicamento)
-                .collection("Registro de Toma")
-
-            val oneWeekAgo = Calendar.getInstance().apply {
-                add(Calendar.DAY_OF_YEAR, -6)
-            }.time
-
-            println("Consultando registros desde: ${dateTimeFormat.format(oneWeekAgo)}")
-
-            registroTomaRef.whereGreaterThanOrEqualTo("Fecha_Hora", dateTimeFormat.format(oneWeekAgo))
-                .get().addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val documents = task.result
-                        if (documents != null && !documents.isEmpty) {
-                            println("Documentos obtenidos: ${documents.size()}")
-                            val registrosPorFecha = documents.groupBy {
-                                dateFormat.format(dateTimeFormat.parse(it.getString("Fecha_Hora")!!))
-                            }
-
-                            registrosPorFecha.forEach { (fecha, registros) ->
-                                println("Fecha: $fecha, Registros: ${registros.size}")
-                                registros.forEach { registro ->
-                                    println("    Registro: ${registro.data}")
-                                }
-                            }
-
-                            // Generar el reporte en PDF
-                            generatePDFReport(registrosPorFecha)
-                        } else {
-                            println("No se encontraron documentos.")
-                        }
-                    } else {
-                        println("Error al obtener documentos: ${task.exception}")
-                    }
+            println("Paciente ID encontrado en AdaptadorTomas: $pacienteId")
+            CoroutineScope(Dispatchers.Main).launch {
+                val registrosPorMedicamento = getRegistrosPorMedicamento(pacienteId)
+                updateImageViews(holder, registrosPorMedicamento)
+                if (position == frecuencia - 1) {
+                    generatePDFReport(registrosPorMedicamento)
                 }
+            }
         } else {
-            println("Paciente ID no encontrado en SharedPreferences.")
-        }
+            println("Paciente ID no encontrado en SharedPreferences en AdaptadorTomas.")
+        }*/
     }
 
-    private fun generatePDFReport(registrosPorFecha: Map<String, List<DocumentSnapshot>>) {
-        val filename = "${System.currentTimeMillis()}_Reporte_Quincenal.pdf"
-        val directoryPath = Environment.getExternalStorageDirectory().toString() + "/MedSyncReports/"
-        val directory = File(directoryPath)
-        if (!directory.exists()) {
-            if (checkManageExternalStoragePermission()) {
-                val directoryCreated = directory.mkdirs()
-                if (!directoryCreated) {
-                    println("Error: No se pudo crear el directorio $directoryPath")
-                    return
-                }
-            } else {
-                println("Error: Permiso MANAGE_EXTERNAL_STORAGE no concedido")
-                return
+    private fun updateImageViews(holder: ViewHolder, estadosMedicamentos: List<String>) {
+        println("updateImageViews llamado")
+        holder.diasImageViews.forEach { imageView ->
+            imageView.setImageResource(R.drawable.cross_icon) // Reemplaza con el ícono correspondiente
+        }
+
+        var i = 0
+
+        for (estadosMedicamento in estadosMedicamentos) {
+            if (estadosMedicamento.equals("completado")){
+                holder.diasImageViews[i].setImageResource(R.drawable.check_icon) // Reemplaza con el ícono correspondiente
+                println("El estado: $estadosMedicamento SI es igual a completado")
             }
-        }
-
-        val filePath = directoryPath + filename
-        val file = File(filePath)
-
-        try {
-            val writer = PdfWriter(FileOutputStream(file))
-            val pdfDocument = PdfDocument(writer)
-            val document = Document(pdfDocument, PageSize.A4)
-
-            // Agregar contenido al PDF
-            document.add(Paragraph("Reporte Quincenal de Toma de Medicamentos"))
-            document.add(Paragraph("Fecha de creación: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())}"))
-            document.add(Paragraph("\n"))
-
-            // Agregar registros de toma
-            registrosPorFecha.forEach { (fecha, registros) ->
-                document.add(Paragraph("Fecha: $fecha"))
-                registros.forEachIndexed { index, registro ->
-                    val estado = registro.getString("Estado") ?: "No especificado"
-                    document.add(Paragraph("Toma ${index + 1}: $estado"))
-                }
-                document.add(Paragraph("\n"))
+            else{
+                println("El estado: $estadosMedicamento NO es igual a completado")
             }
-
-            document.close()
-            println("Reporte generado en: $filePath")
-        } catch (e: Exception) {
-            println("Error al generar el reporte PDF: ${e.message}")
+            i++
         }
-    }
-
-    private fun checkManageExternalStoragePermission(): Boolean {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            return true // El permiso no es necesario en versiones anteriores a Android 11
-        }
-        return if (ContextCompat.checkSelfPermission(context, Manifest.permission.MANAGE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            true
-        } else {
-            if (context is Activity) {
-                ActivityCompat.requestPermissions(context, arrayOf(Manifest.permission.MANAGE_EXTERNAL_STORAGE), MANAGE_EXTERNAL_STORAGE_REQUEST_CODE)
-            }
-            false
-        }
-    }
-
-    companion object {
-        private const val MANAGE_EXTERNAL_STORAGE_REQUEST_CODE = 100
     }
 
     override fun getItemCount(): Int {
-        return tomas.size
+        println("AdaptadorTomas getItemCount llamado, frecuencia: $frecuencia")
+        return frecuencia
     }
 }
