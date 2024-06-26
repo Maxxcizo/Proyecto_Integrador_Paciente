@@ -20,6 +20,7 @@ mockk = "1.12.0"
 mockitoKotlin = "3.2.0"
 mpandroidchart = "v3.1.0"
 robolectric = "4.4"
+roomKtx = "2.6.1"
 
 [libraries]
 androidx-core = { module = "androidx.test:core", version.ref = "coreKtxVersion" }
@@ -42,6 +43,7 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
 mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

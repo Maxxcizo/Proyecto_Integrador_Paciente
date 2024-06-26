@@ -5,23 +5,17 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintSet.Layout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.medsyncpaciente.ConfirmarTomaActivity
 import com.example.medsyncpaciente.R
+import com.example.medsyncpaciente.fragments.Medicamento
 
-class AdaptadorMedicina(private val context: Context) : RecyclerView.Adapter<AdaptadorMedicina.ViewHolder>() {
-
-    // hora,medicina,dosis
-
-    private val hora = arrayOf("8:00 a.m.", "9:00 a.m.", "10:00 a.m.")
-    private val medicamento = arrayOf("Paracetamol", "Ibuprofeno", "PeptoBismol")
-    private val dosis = arrayOf("un par", "varios", "moderado")
-
+class AdaptadorMedicina(
+    private val context: Context,
+    var medicamentos: List<Medicamento>
+) : RecyclerView.Adapter<AdaptadorMedicina.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.rv_medicine, parent, false)
@@ -29,23 +23,24 @@ class AdaptadorMedicina(private val context: Context) : RecyclerView.Adapter<Ada
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val hour = hora[position]
-        val medicine = medicamento[position]
-        val dosis = dosis[position]
+        val medicamento = medicamentos[position]
 
-        holder.horatext.text = hour
-        holder.medicamentotext.text = medicine
-        holder.dosistext.text = dosis
-        holder.CampoRecycler.setOnClickListener{
-            // Acción a realizar cuando se haga clic en el botón "go"
-            // Por ejemplo, puedes abrir una nueva actividad
-            val intent = Intent(context, ConfirmarTomaActivity::class.java)
+        holder.horatext.text = "Frecuencia: ${medicamento.frecuencia} vez/veces al día"
+        holder.medicamentotext.text = medicamento.nombre
+        holder.dosistext.text = "Cantidad: ${medicamento.cantidad} tableta(s)"
+
+        holder.CampoRecycler.setOnClickListener {
+            val intent = Intent(context, ConfirmarTomaActivity::class.java).apply {
+                putExtra("medicamento_nombre", medicamento.nombre)
+                putExtra("medicamento_cantidad", medicamento.cantidad)
+                putExtra("medicamento_frecuencia", medicamento.frecuencia)
+            }
             context.startActivity(intent)
         }
     }
 
     override fun getItemCount(): Int {
-        return hora.size
+        return medicamentos.size
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -54,5 +49,4 @@ class AdaptadorMedicina(private val context: Context) : RecyclerView.Adapter<Ada
         var dosistext: TextView = itemView.findViewById(R.id.dosis_tv)
         var CampoRecycler: LinearLayout = itemView.findViewById(R.id.campoRecycler)
     }
-
 }

@@ -11,12 +11,12 @@
     <string name="posponer_button_text">Posponer</string>
     <string name="prefs_file">com.medsyncpaciente.PREFERENCE_FILE_KEY</string>
     <string-array name="dias_semana">
-        <item>Lunes</item>
-        <item>Martes</item>
-        <item>Miércoles</item>
-        <item>Jueves</item>
-        <item>Viernes</item>
-        <item>Sábado</item>
+        <item>lunes</item>
+        <item>martes</item>
+        <item>miércoles</item>
+        <item>jueves</item>
+        <item>viernes</item>
+        <item>sábado</item>
     </string-array>
     <string-array name="horas_citas">
         <item>09:00:00</item>

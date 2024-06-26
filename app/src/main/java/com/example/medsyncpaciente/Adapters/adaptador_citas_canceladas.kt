@@ -17,6 +17,8 @@ import java.util.Locale
 class AdaptadorCitasCanceladas(private val context: Context, private val citas: List<Cita>) : RecyclerView.Adapter<AdaptadorCitasCanceladas.ViewHolder>() {
 
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+    private val dayFormat = SimpleDateFormat("EEEE", Locale.getDefault())
+    private val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.rv_citas, parent, false)
@@ -26,8 +28,20 @@ class AdaptadorCitasCanceladas(private val context: Context, private val citas: 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val cita = citas[position]
 
+        println("Citas Canceladas: $citas")
+
         holder.medicotext.text = cita.medico
-        holder.fechatext.text = cita.fecha
+
+        try {
+            val date = dateFormat.parse(cita.fecha)
+            holder.fechatext.text = cita.fecha
+            println("Dia de la cita: ${date?.let { dayFormat.format(it) }}")
+            println("Hora de la cita: ${date?.let { timeFormat.format(it) }}")
+        } catch (e: Exception) {
+            println("Dia de la cita no obtenido")
+            println("Hora de la cita no obtenida")
+        }
+
         holder.campoRecycler.setOnClickListener {
             // Mostrar diálogo de confirmación
             AlertDialog.Builder(context)

@@ -15,10 +15,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class AddAppointmentActivity : AppCompatActivity() {
 
@@ -269,13 +271,13 @@ class AddAppointmentActivity : AppCompatActivity() {
     private fun getNextClosestDate(selectedDay: String, selectedHour: String, weeksToAdd: Int): String {
         val today = LocalDateTime.now()
         val selectedDayOfWeek = when (selectedDay) {
-            "Lunes" -> DayOfWeek.MONDAY
-            "Martes" -> DayOfWeek.TUESDAY
-            "Miércoles" -> DayOfWeek.WEDNESDAY
-            "Jueves" -> DayOfWeek.THURSDAY
-            "Viernes" -> DayOfWeek.FRIDAY
-            "Sábado" -> DayOfWeek.SATURDAY
-            "Domingo" -> DayOfWeek.SUNDAY
+            "lunes" -> DayOfWeek.MONDAY
+            "martes" -> DayOfWeek.TUESDAY
+            "miércoles" -> DayOfWeek.WEDNESDAY
+            "jueves" -> DayOfWeek.THURSDAY
+            "viernes" -> DayOfWeek.FRIDAY
+            "sábado" -> DayOfWeek.SATURDAY
+            "domingo" -> DayOfWeek.SUNDAY
             else -> throw IllegalArgumentException("Día inválido")
         }
 
@@ -311,7 +313,7 @@ class AddAppointmentActivity : AppCompatActivity() {
                 // Agregar la cita a la subcolección de citas del paciente
                 db.document("/Paciente/$pacienteID")
                     .collection("Citas")
-                    .add(mapOf("CitaID" to citaRef))
+                    .add(mapOf("CiataID" to citaRef))
                     .addOnSuccessListener {
                         println("Cita agregada a la subcolección del paciente.")
                     }
@@ -336,25 +338,42 @@ class AddAppointmentActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun prefillAppointmentDetails(citaFecha: String, medicoID: String) {
-        // Eliminar espacios adicionales en la cadena de fecha
-        val cleanedCitaFecha = citaFecha.trim().replace("\\s+".toRegex(), " ")
 
-        // Extraer día y hora de la fecha de la cita previa
-        val localDateTime = LocalDateTime.parse(cleanedCitaFecha, dateTimeFormatter)
-        val dayOfWeek = localDateTime.dayOfWeek
-        val hourOfDay = localDateTime.toLocalTime().toString()
+        println("medicoID: $medicoID")
 
-        // Establecer el día de la semana en el spinner
-        val dayOfWeekIndex = dayOfWeek.ordinal
-        diaSpinner.setSelection(dayOfWeekIndex)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val dayFormat = SimpleDateFormat("EEEE", Locale("es", "ES")) // Asegúrate de usar el Locale correcto
+        val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
 
-        // Establecer la hora en el spinner
-        val hourIndex = horaAdapter.getPosition(hourOfDay)
-        horaSpinner.setSelection(hourIndex)
+        try {
+            val date = dateFormat.parse(citaFecha)
+            val dia = date?.let { dayFormat.format(it) }
+            val hora = date?.let { timeFormat.format(it) }
+            println("dia: $dia")
+            println("hora: $hora")
+
+            val diaIndex = diaAdapter.getPosition(dia)
+            val horaIndex = horaAdapter.getPosition(hora)
+
+            println("dia index: $diaIndex")
+            println("hora index: $horaIndex")
+
+            diaSpinner.setSelection(diaIndex)
+            horaSpinner.setSelection(horaIndex)
+
+        } catch (e: Exception) {
+            println("Dia de la cita no obtenido")
+            println("Hora de la cita no obtenida")
+        }
+
+        for ((key, value) in medicoReferenceMap) {
+            println("$key -> ${value.id}")
+        }
 
         // Buscar y establecer el médico en el spinner
         for (i in 0 until medicoAdapter.count) {
             val medico = medicoAdapter.getItem(i)
+            println("Comparacion: ${medicoReferenceMap[medico]} == $medicoID")
             if (medicoReferenceMap[medico]?.id == medicoID) {
                 medicoSpinner.setSelection(i)
                 break
@@ -368,4 +387,6 @@ class AddAppointmentActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "AddAppointmentActivity"
     }
+
+
 }

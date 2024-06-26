@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.mpandroidchart)
     implementation ("com.itextpdf:itext7-core:7.1.15")
+    implementation(libs.androidx.room.ktx)
 
 
     testImplementation (libs.mockito.core)
